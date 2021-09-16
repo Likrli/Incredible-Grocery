@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Buyer
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: StaticObjects
+    uniqueID: 805169231
+    locked: 0
+  - name: Buyer
+    uniqueID: 3053440373
+    locked: 0
+  - name: Table
+    uniqueID: 996083873
+    locked: 0
+  - name: Cashier
+    uniqueID: 1184244937
+    locked: 0
+  - name: UI
+    uniqueID: 1822471053
+    locked: 0
