@@ -2,37 +2,50 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
-    public AudioMixerGroup MainMixer;
-    public AudioSource[] AllAudioSource;
-    public AudioClip[] ClipSounds;
-    private SaveData p_saveData;
+    [SerializeField] private AudioMixerGroup _mainMixer;
+    [SerializeField] private AudioSource[] _allAudioSource;
+    [SerializeField] private AudioClip[] _clipSounds;
+    [SerializeField] private SaveData _saveData;
+    [SerializeField]
+    public enum Clip
+    {
+        SpawnBuble,
+        CloseBuble,
+        ClickButton,
+        Money,
+        SelectProduct
+    }
     private void Start()
     {
-        p_saveData = FindObjectOfType<SaveData>();
-        p_saveData.onSetOptions += SetOptions;
-        SetOptions(p_saveData.Sounds, p_saveData.Music);
+        _saveData = GetComponent<SaveData>();
+        _saveData.Option += OnSetOptions;
+        OnSetOptions(sounds: _saveData.Sounds, music: _saveData.Music);
+    }
+    public void OnSetOptions(int sounds, int music)
+    {
+        _mainMixer.audioMixer.SetFloat("SoundsVolume", sounds * -80); //1 * -80
+        _mainMixer.audioMixer.SetFloat("MusicVolume", music * -80); // 0*-80 
     }
 
-    public void SetOptions(int sonds, int music)
+    public void OnSetOptions(bool isSounds, int value)
     {
-        MainMixer.audioMixer.SetFloat("SoundsVolume", sonds * -80); // (0*-80db = 0db enabled) (1*-80db = -80db disabled)
-        MainMixer.audioMixer.SetFloat("MusicVolume", music * -80);
+        switch (isSounds)
+        {
+            case true:
+                _mainMixer.audioMixer.SetFloat("SoundsVolume", value * -80);
+                break;
+            case false:
+                _mainMixer.audioMixer.SetFloat("MusicVolume", value * -80);
+                break;
+        }
     }
-
-    /// <numClip>
-    /// 0 - Spawn cloud
-    /// 1 - Close cloud
-    /// 2 - Btn click
-    /// 3 - Money (cashier)
-    /// 4 - Select product
-    /// </numClip>
-    public void PlayClip(int indexSource, int numClip)
+    public void PlayClip(int indexSource, Clip clip)
     {
-        AllAudioSource[indexSource].PlayOneShot(ClipSounds[numClip]);
+        _allAudioSource[indexSource].PlayOneShot(_clipSounds[(int)clip]);
     }
-    public void PlayClip(int numClip)
+    public void PlayClip()
     {
-        AllAudioSource[1].PlayOneShot(ClipSounds[numClip]); //For Btn
+        _allAudioSource[1].PlayOneShot(_clipSounds[(int)Clip.ClickButton]);
     }
 
 

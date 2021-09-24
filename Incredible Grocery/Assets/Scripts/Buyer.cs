@@ -3,77 +3,77 @@ using System.Collections;
 
 public class Buyer : MonoBehaviour
 {
-    public float Step;
-    public float Progress;
-
-    private Vector2 PointBuy;
-    private Vector2 StartPos;
-
-    public GameObject[] ObjEmotions;
-
-    private Animator p_animControll;
-
-    private Storage p_storage;
-    private AudioManager p_audioManager;
-
-    private GameController p_gameController;
+    [SerializeField] private float _stepBuyer;
+    [SerializeField] private float _progress;
+    [SerializeField] private Vector2 _pointBuy;
+    [SerializeField] private Vector2 _pointExit;
+    [SerializeField] private GameObject _bubleEmotions;
+    [SerializeField] private SpriteRenderer _rendererEmotions;
+    [SerializeField] private Sprite[] _badgeEmotions;
+    private Animator _animatorBuyer;
+    private Storage _storage;
+    private AudioManager _audioManager;
+    private GameController _gameController;
 
     private void Start()
     {
-        p_animControll = GetComponent<Animator>();
-        StartPos = transform.position;
-        PointBuy = GameObject.Find("PointBuy").GetComponent<Transform>().position;
-        PointBuy += new Vector2(0, 1f);
-
-        p_audioManager = FindObjectOfType<AudioManager>();
-        p_gameController = FindObjectOfType<GameController>();
-        p_storage = FindObjectOfType<Storage>();
-        p_storage.onEmotion += SetEmotion;
-
+        _animatorBuyer = GetComponent<Animator>();
+        StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _pointBuy));
     }
 
-    private void FixedUpdate()
+    private IEnumerator MoveBuyer(Vector2 currentPosition, Vector2 desiredPosition)
     {
-        if (Progress < 1)
+        _progress = 0;
+        _animatorBuyer.SetBool(name: "Walk", value: true);
+        while (_progress < 1)
         {
-            p_animControll.SetBool("Walk", true);
-            transform.position = Vector2.Lerp(StartPos, PointBuy, Progress);
-            Progress += Step;
+            transform.position = Vector2.Lerp(currentPosition, desiredPosition, _progress);
+            _progress += _stepBuyer;
+            yield return new WaitForFixedUpdate();
         }
-        else
-        {
-            p_animControll.SetBool("Walk", false);
-        }
+        _animatorBuyer.SetBool(name: "Walk", value: false);
     }
 
-    public void SetEmotion(int varEmotion) //0 - angry 1 - good
+    private void OnShowEmotion(bool emotion)
     {
-        p_audioManager.PlayClip(1,0);
-        ObjEmotions[varEmotion].SetActive(true);
+        _audioManager.PlayClip(1, AudioManager.Clip.SpawnBuble);
+        _bubleEmotions.SetActive(true);
+        switch (emotion)
+        {
+            case true:  _rendererEmotions.sprite = _badgeEmotions[1];
+                break;
+            case false: _rendererEmotions.sprite = _badgeEmotions[0];
+                break;
+        }
         StartCoroutine(ExitGrocery());
     }
 
-    IEnumerator ExitGrocery()
+    private IEnumerator ExitGrocery()
     {
         yield return new WaitForSeconds(1f);
         transform.localScale = new Vector2(-1, 1);
         yield return new WaitForSeconds(.5f);
-        StartPos = transform.position; 
-        PointBuy = GameObject.Find("PointExit").GetComponent<Transform>().position;
-        Progress = 0;
-        yield return new WaitForSeconds(1.5f);
-        p_audioManager.PlayClip(1, 1);
-        foreach (var item in ObjEmotions)
-        {
-            item.SetActive(false);
-        }
+        StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _pointExit));
+        yield return new WaitForSeconds(1f);
+        _audioManager.PlayClip(1, AudioManager.Clip.CloseBuble);
+        _bubleEmotions.SetActive(false);
     }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.name == "PointExit")
+        if(collision.TryGetComponent(out PointBuy pointBuy))
         {
-            p_gameController.SpawnBuyer();
-            p_storage.onEmotion -= SetEmotion;
+            _audioManager = collision.GetComponent<AudioManager>();
+            _gameController = collision.GetComponent<GameController>();
+            _storage = collision.GetComponent<Storage>();
+            _storage.Emotion += OnShowEmotion;
+            _gameController.ServeBuyer();
+        }
+        if (collision.TryGetComponent(out Exit exit))
+        {
+            _gameController.GenerateBuyer();
+            _storage.Emotion -= OnShowEmotion;
             Destroy(gameObject);
         }
     }

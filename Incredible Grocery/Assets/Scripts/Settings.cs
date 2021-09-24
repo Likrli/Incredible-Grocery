@@ -3,90 +3,55 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
-
-    public Sprite[] SprBtn;
-    public Image[] ImgBtn;
-    public Text TxtSounds;
-    public Text TxtMusic;
-
-    private SaveData p_saveData;
-    private int p_vSounds;
-    private int p_vMusic;
-
-    private void Start()
-    {
-        p_saveData = FindObjectOfType<SaveData>();
-        p_vSounds = p_saveData.Sounds;
-        p_vMusic = p_saveData.Music;
-    }
-
+    [SerializeField] private Sprite[] _spriteButton;
+    [SerializeField] private Image[] _imageButton;
+    [SerializeField] private Text _laybleSounds;
+    [SerializeField] private Text _laybleMusic;
+    [SerializeField] private SaveData _saveData;
     public void RefreshSetPanel()
     {
-        if(p_vSounds == 0)
+        RefreshButtons(numberButton: 0, numberSprite: _saveData.Sounds, textBtn: _saveData.Sounds == 0? "ON" : "OFF");
+        RefreshButtons(numberButton: 1, numberSprite: _saveData.Music, textBtn: _saveData.Music == 0 ? "ON" : "OFF");
+    }
+
+    public void SwitchSounds(bool sounds)
+    {
+        if (sounds)
         {
-            Btn(0, 0, "ON");
+            RefreshButtons(numberButton: 0, numberSprite: 0, textBtn: "ON");
         }
         else
         {
-            Btn(0, 1, "OFF");
+            RefreshButtons(numberButton: 0, numberSprite: 1, textBtn: "OFF");
         }
+        _saveData.SaveOptions(isSound: true, value: sounds==true ? 0 : 1);
+    }
 
-        if (p_vMusic == 0)
+    public void SwitchMusic(bool music)
+    {
+        if (music)
         {
-            Btn(1, 0, "ON");
+            RefreshButtons(numberButton: 1, numberSprite: 0, textBtn: "ON");
         }
         else
         {
-            Btn(1, 1, "OFF");
+            RefreshButtons(numberButton: 1, numberSprite: 1, textBtn: "OFF");
         }
+        _saveData.SaveOptions(isSound: false, value: music == true ? 0 : 1);
     }
 
-    public void ToggleSounds(bool onSounds)
+    private void RefreshButtons(int numberButton, int numberSprite, string textBtn)
     {
-        if (onSounds)
-        {
-            p_vSounds = 0;
-            Btn(0, 0, "ON");
-        }
-        else
-        {
-            p_vSounds = 1;
-            Btn(0, 1, "OFF");
-        }
-        SaveSettings();
-    }
-
-    public void ToggleMusic(bool onMusic)
-    {
-        if (onMusic)
-        {
-            p_vMusic = 0;
-            Btn(1, 0, "ON");
-        }
-        else
-        {
-            p_vMusic = 1;
-            Btn(1, 1, "OFF");
-        }
-        SaveSettings();
-    }
-    public void SaveSettings()
-    {
-        p_saveData.SaveOptions(p_vSounds, p_vMusic);
-    }
-
-    private void Btn(int indexBtn, int indexSpr, string txtBtn)
-    {
-        switch (indexBtn)
+        switch (numberButton)
         {
             case 0:
-                TxtSounds.text = txtBtn;
+                _laybleSounds.text = textBtn;
                 break;
             case 1:
-                TxtMusic.text = txtBtn;
+                _laybleMusic.text = textBtn;
                 break;
         }
-        ImgBtn[indexBtn].sprite = SprBtn[indexSpr];
+        _imageButton[numberButton].sprite = _spriteButton[numberSprite];
     }
     
 }

@@ -2,67 +2,75 @@ using UnityEngine;
 
 public class SaveData : MonoBehaviour
 {
-    public delegate void SetOptions(int S, int M);
-    public event SetOptions onSetOptions;
+    private int _cash;
+    private int _sounds;
+    private int _music;
+    public int Cash { get { return _cash; } }
+    public int Sounds { get { return _sounds; } }
+    public int Music { get { return _music; } }
 
-    public delegate void SetCash(int C);
-    public event SetCash onSetCash;
+    private const string KeyLaunch = "fLaunch";
+    private const string KeyCash = "Cash";
+    private const string KeySounds = "Sounds";
+    private const string KeyMusic = "Music";
 
-    private int p_cash;
-    public int CASH { get { return p_cash; } }
-    private int p_sounds;
-    public int Sounds { get { return p_sounds; } }
-    private int p_music;
-    public int Music { get { return p_music; } }
+    public delegate void GetOprions(bool isSounds, int value);
+    public event GetOprions Option;
 
-    private string KEY_fLaunch = "fLaunch";
-    private string KEY_Cash = "Cash";
-    private string KEY_Sounds = "Sounds";
-    private string KEY_Music = "Music";
+    public delegate void CountCash(int allCash);
+    public event CountCash Recalculation;
 
 
 
     private void Awake()
     {
-        if (PlayerPrefs.HasKey(KEY_fLaunch))
+        if (PlayerPrefs.HasKey(KeyLaunch))
         {
-            if (PlayerPrefs.GetInt(KEY_fLaunch) == 1)
+            if (PlayerPrefs.GetInt(KeyLaunch) == 1)
             {
                 TakeData();
             }
         }
         else
         {
-            p_cash = 0; 
-            p_music = 0; // 0 - enable, 1 - disable
-            p_sounds = 0; 
-            PlayerPrefs.SetInt(KEY_Cash, p_cash);
-            PlayerPrefs.SetInt(KEY_Sounds, p_sounds);
-            PlayerPrefs.SetInt(KEY_Music, p_music);
-            PlayerPrefs.SetInt(KEY_fLaunch, 1);
+            _cash = 0; 
+            _music = 0; // 0 - enable, 1 - disable
+            _sounds = 0; 
+            PlayerPrefs.SetInt(KeyCash, _cash);
+            PlayerPrefs.SetInt(KeySounds, _sounds);
+            PlayerPrefs.SetInt(KeyMusic, _music);
+            PlayerPrefs.SetInt(KeyLaunch, 1);
             PlayerPrefs.Save();
         }
     }
 
     public void SaveCash(int newCash)
     {
-        p_cash += newCash;
-        PlayerPrefs.SetInt(KEY_Cash, p_cash);
+        _cash += newCash;
+        PlayerPrefs.SetInt(KeyCash, _cash);
         PlayerPrefs.Save();
-        onSetCash(p_cash);
+        Recalculation?.Invoke(_cash);
     }
-    public void SaveOptions(int P_SOUNDS, int P_MUSIC)
+    public void SaveOptions(bool isSound, int value)
     {
-        PlayerPrefs.SetInt(KEY_Sounds, P_SOUNDS);
-        PlayerPrefs.SetInt(KEY_Music, P_MUSIC);
+        switch (isSound)
+        {
+            case true:
+                _sounds = value;
+                PlayerPrefs.SetInt(KeySounds, _sounds);
+                break;
+            case false:
+                _music = value;
+                PlayerPrefs.SetInt(KeyMusic, _music);
+                break;
+        }
         PlayerPrefs.Save();
-        onSetOptions(P_SOUNDS, P_MUSIC);
+        Option?.Invoke(isSound, value);
     }
-
     public void TakeData()
     {
-        p_cash = PlayerPrefs.GetInt(KEY_Cash);
-        p_sounds = PlayerPrefs.GetInt(KEY_Sounds);
-        p_music = PlayerPrefs.GetInt(KEY_Music);
+        _cash = PlayerPrefs.GetInt(KeyCash);
+        _sounds = PlayerPrefs.GetInt(KeySounds);
+        _music = PlayerPrefs.GetInt(KeyMusic);
     }
 }
