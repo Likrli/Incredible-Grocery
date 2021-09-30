@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mainMixer;
-    [SerializeField] private AudioSource[] allAudioSource;
+    [SerializeField] private AudioSource[] allAudioSources;
     [SerializeField] private AudioClip[] allClips;
     public enum Clip
     {
@@ -34,11 +34,6 @@ public class AudioManager : MonoBehaviour
 
     public void PlayClip(Clip clip)
     {
-        allAudioSource[(clip == Clip.ClickButton ? 1 : 0)].PlayOneShot(allClips[(int)clip]);
-    }
-
-    public void SoundsButton()
-    {
-        PlayClip(clip: Clip.ClickButton);
+        allAudioSources[(clip == Clip.ClickButton ? 1 : 0)].PlayOneShot(allClips[(int)clip]);
     }
 }

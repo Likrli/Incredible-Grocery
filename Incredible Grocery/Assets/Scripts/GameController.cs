@@ -14,13 +14,16 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject buyer;
     [SerializeField] private GameObject orderBubble;
     [SerializeField] private GameObject[] orderedProducts;
-    public int OrderedProductsNymber => orderedProductsNumber;
+    [SerializeField] private Button[] allButtons;
+
+    public int OrderedProductsNumber => orderedProductsNumber;
     public Products[] AllProducts =>  allProducts;
     public List<int> OrderedProductsId => orderedProductsId;
 
     private Storage _storage;
     private SaveData _saveData;
     private AudioManager _audioManager;
+
 
     private void Start()
     {
@@ -31,6 +34,10 @@ public class GameController : MonoBehaviour
         _storage.ReceivedCash += OnGetCash;
         GenerateBuyer();
         UpdateTextCash(_saveData.Cash);
+        foreach (var button in allButtons)
+        {
+            button.onClick.AddListener(PlaySoundsButton);
+        }
     }
 
     private void UpdateTextCash(int cash)
@@ -92,5 +99,8 @@ public class GameController : MonoBehaviour
             _saveData.SaveCash(newCash: rightProductsAmount * (wasHappyBuyer? 20 : 10));
         }
     }
-
+    private void PlaySoundsButton()
+    {
+        _audioManager.PlayClip(clip: AudioManager.Clip.ClickButton);
+    }
 }

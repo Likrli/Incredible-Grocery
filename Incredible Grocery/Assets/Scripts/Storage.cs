@@ -33,6 +33,7 @@ public class Storage : MonoBehaviour
     {
         _gameController = GetComponent<GameController>();
         _audioManager = GetComponent<AudioManager>();
+        sell.onClick.AddListener(HideStorage);
     }
 
     public void ShowStorage()
@@ -62,7 +63,7 @@ public class Storage : MonoBehaviour
 
     private void ActivateBtnSell()
     {
-        if (_selectedProductsNumber != _gameController.OrderedProductsNymber) 
+        if (_selectedProductsNumber != _gameController.OrderedProductsNumber) 
         {
             sell.interactable = false;
             sellImg.color = ChangeAlphaColor(color: sellImg.color, alpha: .5f);
@@ -103,7 +104,7 @@ public class Storage : MonoBehaviour
         }
         collectedOrderBubble.SetActive(true);
         _audioManager.PlayClip(AudioManager.Clip.SpawnBuble);
-        for (int i = 0; i < _gameController.OrderedProductsNymber; i++)
+        for (int i = 0; i < _gameController.OrderedProductsNumber; i++)
         {
             collectedProducts[i].SetActive(true);
             collectedProductsImgs[i].sprite = _gameController.AllProducts[collectedProductsId[i]].ProductSprite;
@@ -117,7 +118,7 @@ public class Storage : MonoBehaviour
         {
             checkmarkImgs[i].sprite = selectedBadge; 
         }
-        for (int i = 0; i < _gameController.OrderedProductsNymber; i++)
+        for (int i = 0; i < _gameController.OrderedProductsNumber; i++)
         {
             CheckSelectedProducts(numberProduct: i, selectedProductsId: collectedProductsId);
             yield return new WaitForSeconds(.5f);
@@ -133,7 +134,7 @@ public class Storage : MonoBehaviour
 
     private void CheckSelectedProducts(int numberProduct, List<int> selectedProductsId)
     {
-        for (int i = 0; i < _gameController.OrderedProductsNymber; i++)
+        for (int i = 0; i < _gameController.OrderedProductsNumber; i++)
         {
             if(_gameController.OrderedProductsId[i] == selectedProductsId[numberProduct])
             {
