@@ -2420,7 +2420,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1003800043}
         m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: PlayClip
+        m_MethodName: SoundsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2889,7 +2889,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1003800043}
         m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: PlayClip
+        m_MethodName: SoundsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2913,7 +2913,7 @@ GameObject:
   - component: {fileID: 664464378}
   - component: {fileID: 664464377}
   m_Layer: 5
-  m_Name: BubleCollectedOrder
+  m_Name: CollectedOrderBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4054,9 +4054,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2046faa0ee834ca4080b2a56b656f49a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _numberOrderedProducts: 0
-  _amountCash: {fileID: 1139604239}
-  _allProducts:
+  orderedProductsNumber: 0
+  cashAmount: {fileID: 1139604239}
+  allProducts:
   - {fileID: 11400000, guid: 105aae37cd482d34cb3ac9df14c5ac01, type: 2}
   - {fileID: 11400000, guid: 30a7bce59017fe04cbf7bbca124025fc, type: 2}
   - {fileID: 11400000, guid: 3b08a65a90837e8479a5f3d003f20d96, type: 2}
@@ -4077,16 +4077,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7c3b72802932c9a4bafdf28e6ee824f6, type: 2}
   - {fileID: 11400000, guid: fc87541f849b0a041a2389fde69f299c, type: 2}
   - {fileID: 11400000, guid: 4e7902811ade8034e818c3f701fef5be, type: 2}
-  _idOrderedProducts: 
-  _buyer: {fileID: 3230293114455275945, guid: 038f6c97dbee827458fef3564774bc04, type: 3}
-  _bubleWithOrder: {fileID: 1303900637}
-  _orderedProducts:
+  orderedProductsId: 
+  buyer: {fileID: 3230293114455275945, guid: 038f6c97dbee827458fef3564774bc04, type: 3}
+  orderBubble: {fileID: 1303900637}
+  orderedProducts:
   - {fileID: 1363343967}
   - {fileID: 1772610837}
   - {fileID: 1580390436}
-  _storage: {fileID: 0}
-  _saveData: {fileID: 0}
-  _audioManager: {fileID: 0}
 --- !u!4 &1003800040
 Transform:
   m_ObjectHideFlags: 0
@@ -4115,8 +4112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e32f6f53cab4d409d42c169200b37f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _numberRightProducts: 0
-  _products:
+  rightProductsAmount: 0
+  products:
   - {fileID: 2035729280}
   - {fileID: 973448584}
   - {fileID: 682000383}
@@ -4137,7 +4134,7 @@ MonoBehaviour:
   - {fileID: 457308891}
   - {fileID: 740334845}
   - {fileID: 508051976}
-  ImgToggles:
+  toggleImgs:
   - {fileID: 222641402}
   - {fileID: 394426630}
   - {fileID: 1847586084}
@@ -4158,24 +4155,24 @@ MonoBehaviour:
   - {fileID: 1465738695}
   - {fileID: 1839834263}
   - {fileID: 1532028902}
-  ImgCollectedProducts:
+  collectedProductsImgs:
   - {fileID: 1576973489}
   - {fileID: 1923647488}
   - {fileID: 1950500767}
-  Checkmark:
+  checkmarkImgs:
   - {fileID: 2035436510}
   - {fileID: 1475915168}
   - {fileID: 1637728485}
-  _badgeCheckmark:
-  - {fileID: 21300000, guid: 5fecac16413cf524fa49a6054333c78c, type: 3}
-  - {fileID: 21300000, guid: a89669bb147eb5a43b1f79236083b10c, type: 3}
-  _buttonSell: {fileID: 2100911343}
-  _bubleCollectedOrder: {fileID: 664464375}
-  _collectedProducts:
+  cancelledBadge: {fileID: 21300000, guid: 5fecac16413cf524fa49a6054333c78c, type: 3}
+  selectedBadge: {fileID: 21300000, guid: a89669bb147eb5a43b1f79236083b10c, type: 3}
+  sell: {fileID: 2100911345}
+  sellImg: {fileID: 2100911346}
+  collectedOrderBubble: {fileID: 664464375}
+  collectedProducts:
   - {fileID: 1689097567}
   - {fileID: 1378354695}
   - {fileID: 2127579335}
-  _animController: {fileID: 1060143507}
+  storageAnimator: {fileID: 1060143507}
 --- !u!82 &1003800042
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4284,18 +4281,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a2ec80961613d4895d6c452cafd865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainMixer: {fileID: 24300002, guid: 58e37772ae13a8144baa20b479d72bac, type: 2}
-  _allAudioSource:
-  - {fileID: 1003800042}
+  mainMixer: {fileID: 24300002, guid: 58e37772ae13a8144baa20b479d72bac, type: 2}
+  allAudioSource:
   - {fileID: 2101504148}
   - {fileID: 1060143509}
-  _clipSounds:
+  allClips:
   - {fileID: 8300000, guid: 8920e4d8479ec574a9370f85186e8698, type: 3}
   - {fileID: 8300000, guid: 8e4597330b68b9d4090fb55fa27372c9, type: 3}
   - {fileID: 8300000, guid: 04f5acc4d0d3564458b20573129f9114, type: 3}
   - {fileID: 8300000, guid: 22115dcafc1f1254581a59dbdfdf7195, type: 3}
   - {fileID: 8300000, guid: cc38d5be62f5e4245bd2554f2e80545e, type: 3}
-  _saveData: {fileID: 0}
 --- !u!50 &1003800044
 Rigidbody2D:
   serializedVersion: 4
@@ -4454,7 +4449,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1003800043}
         m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: PlayClip
+        m_MethodName: SoundsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5078,7 +5073,7 @@ GameObject:
   - component: {fileID: 1139604240}
   - component: {fileID: 1139604239}
   m_Layer: 5
-  m_Name: AmountCash
+  m_Name: CashAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5732,7 +5727,7 @@ GameObject:
   - component: {fileID: 1303900640}
   - component: {fileID: 1303900639}
   m_Layer: 5
-  m_Name: BubleWithOrder
+  m_Name: OrderBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10052,7 +10047,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1003800043}
         m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: PlayClip
+        m_MethodName: SoundsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10136,15 +10131,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a91d47682990bde4fbf4147b59c409b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteButton:
+  spriteButton:
   - {fileID: 493483520572277608, guid: 1d0ac83ed8dbd314b81c0f3d6854669a, type: 3}
   - {fileID: -1207560325795574624, guid: dbd773dd3156de542bcd14c2966fff90, type: 3}
-  _imageButton:
+  imageButton:
   - {fileID: 1450792711}
   - {fileID: 1644146678}
-  _laybleSounds: {fileID: 1449003526}
-  _laybleMusic: {fileID: 754981339}
-  _saveData: {fileID: 1003800038}
+  soundsLayble: {fileID: 1449003526}
+  musicLayble: {fileID: 754981339}
+  saveData: {fileID: 1003800038}
 --- !u!1 &2022704953
 GameObject:
   m_ObjectHideFlags: 0
@@ -10511,7 +10506,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1003800043}
         m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: PlayClip
+        m_MethodName: SoundsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

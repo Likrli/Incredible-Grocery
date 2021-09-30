@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: borsch
   m_EditorClassIdentifier: 
-  _idProduct: 9
-  _nameProduct: borsch
-  _spriteProduct: {fileID: 21300000, guid: 93c93ae98f8232a49b2c0f87b4ca52ff, type: 3}
+  productId: 9
+  productName: borsch
+  productSprite: {fileID: 21300000, guid: 93c93ae98f8232a49b2c0f87b4ca52ff, type: 3}

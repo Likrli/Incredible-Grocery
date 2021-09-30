@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: chicken
   m_EditorClassIdentifier: 
-  _idProduct: 10
-  _nameProduct: chicken
-  _spriteProduct: {fileID: 21300000, guid: deb2058b2f520e1419511172d074a771, type: 3}
+  productId: 10
+  productName: chicken
+  productSprite: {fileID: 21300000, guid: deb2058b2f520e1419511172d074a771, type: 3}

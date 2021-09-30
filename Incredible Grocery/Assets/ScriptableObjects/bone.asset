@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: bone
   m_EditorClassIdentifier: 
-  _idProduct: 8
-  _nameProduct: bone
-  _spriteProduct: {fileID: 21300000, guid: 57342d7e4628dcc49a3143e258e3f007, type: 3}
+  productId: 8
+  productName: bone
+  productSprite: {fileID: 21300000, guid: 57342d7e4628dcc49a3143e258e3f007, type: 3}

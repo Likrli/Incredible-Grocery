@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: banana
   m_EditorClassIdentifier: 
-  _idProduct: 2
-  _nameProduct: banana
-  _spriteProduct: {fileID: 21300000, guid: a8d740cbbfb9b8143b7604813d9ae63b, type: 3}
+  productId: 2
+  productName: banana
+  productSprite: {fileID: 21300000, guid: a8d740cbbfb9b8143b7604813d9ae63b, type: 3}

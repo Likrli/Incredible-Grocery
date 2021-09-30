@@ -2,23 +2,27 @@ using UnityEngine;
 
 public class SaveData : MonoBehaviour
 {
+    public int Cash => _cash;
+    public int Sounds => _sounds;
+    public int Music => _music; 
+
     private int _cash;
     private int _sounds;
     private int _music;
-    public int Cash { get { return _cash; } }
-    public int Sounds { get { return _sounds; } }
-    public int Music { get { return _music; } }
 
     private const string KeyLaunch = "fLaunch";
     private const string KeyCash = "Cash";
     private const string KeySounds = "Sounds";
     private const string KeyMusic = "Music";
 
-    public delegate void GetOprions(bool isSounds, int value);
-    public event GetOprions Option;
+    public delegate void OnSetSounds(int value);
+    public event OnSetSounds SetSounds;
 
-    public delegate void CountCash(int allCash);
-    public event CountCash Recalculation;
+    public delegate void OnSetMusic(int value);
+    public event OnSetMusic SetMusic;
+
+    public delegate void OnRecalculatedCash(int allCash);
+    public event OnRecalculatedCash RecalculatedCash;
 
 
 
@@ -34,7 +38,7 @@ public class SaveData : MonoBehaviour
         else
         {
             _cash = 0; 
-            _music = 0; // 0 - enable, 1 - disable
+            _music = 0;
             _sounds = 0; 
             PlayerPrefs.SetInt(KeyCash, _cash);
             PlayerPrefs.SetInt(KeySounds, _sounds);
@@ -49,7 +53,7 @@ public class SaveData : MonoBehaviour
         _cash += newCash;
         PlayerPrefs.SetInt(KeyCash, _cash);
         PlayerPrefs.Save();
-        Recalculation?.Invoke(_cash);
+        RecalculatedCash?.Invoke(_cash);
     }
     public void SaveOptions(bool isSound, int value)
     {
@@ -58,14 +62,15 @@ public class SaveData : MonoBehaviour
             case true:
                 _sounds = value;
                 PlayerPrefs.SetInt(KeySounds, _sounds);
+                SetSounds?.Invoke(_sounds);
                 break;
             case false:
                 _music = value;
                 PlayerPrefs.SetInt(KeyMusic, _music);
+                SetMusic?.Invoke(_music);
                 break;
         }
         PlayerPrefs.Save();
-        Option?.Invoke(isSound, value);
     }
     public void TakeData()
     {

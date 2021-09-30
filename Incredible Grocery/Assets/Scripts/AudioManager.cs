@@ -2,11 +2,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField] private AudioMixerGroup _mainMixer;
-    [SerializeField] private AudioSource[] _allAudioSource;
-    [SerializeField] private AudioClip[] _clipSounds;
-    [SerializeField] private SaveData _saveData;
-    [SerializeField]
+    [SerializeField] private AudioMixerGroup mainMixer;
+    [SerializeField] private AudioSource[] allAudioSource;
+    [SerializeField] private AudioClip[] allClips;
     public enum Clip
     {
         SpawnBuble,
@@ -15,38 +13,32 @@ public class AudioManager : MonoBehaviour
         Money,
         SelectProduct
     }
+    private SaveData _saveData;
+
     private void Start()
     {
         _saveData = GetComponent<SaveData>();
-        _saveData.Option += OnSetOptions;
-        OnSetOptions(sounds: _saveData.Sounds, music: _saveData.Music);
+        _saveData.SetSounds += OnSetSounds;
+        _saveData.SetMusic += OnSetMusic;
+        OnSetSounds(value: _saveData.Sounds);
+        OnSetMusic(value: _saveData.Music);
     }
-    public void OnSetOptions(int sounds, int music)
+    public void OnSetSounds(int value)
     {
-        _mainMixer.audioMixer.SetFloat("SoundsVolume", sounds * -80); //1 * -80
-        _mainMixer.audioMixer.SetFloat("MusicVolume", music * -80); // 0*-80 
+        mainMixer.audioMixer.SetFloat("SoundsVolume", value * -80);
+    }
+    public void OnSetMusic(int value)
+    {
+        mainMixer.audioMixer.SetFloat("MusicVolume", value * -80);
     }
 
-    public void OnSetOptions(bool isSounds, int value)
+    public void PlayClip(Clip clip)
     {
-        switch (isSounds)
-        {
-            case true:
-                _mainMixer.audioMixer.SetFloat("SoundsVolume", value * -80);
-                break;
-            case false:
-                _mainMixer.audioMixer.SetFloat("MusicVolume", value * -80);
-                break;
-        }
-    }
-    public void PlayClip(int indexSource, Clip clip)
-    {
-        _allAudioSource[indexSource].PlayOneShot(_clipSounds[(int)clip]);
-    }
-    public void PlayClip()
-    {
-        _allAudioSource[1].PlayOneShot(_clipSounds[(int)Clip.ClickButton]);
+        allAudioSource[(clip == Clip.ClickButton ? 1 : 0)].PlayOneShot(allClips[(int)clip]);
     }
 
-
+    public void SoundsButton()
+    {
+        PlayClip(clip: Clip.ClickButton);
+    }
 }

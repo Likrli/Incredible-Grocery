@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: apple
   m_EditorClassIdentifier: 
-  _idProsuct: 0
-  _nameProduct: apple
-  _spriteProduct: {fileID: 21300000, guid: e4db3a097ba0a3c42bec22fb64ac0c23, type: 3}
+  productId: 0
+  productName: apple
+  productSprite: {fileID: 21300000, guid: e4db3a097ba0a3c42bec22fb64ac0c23, type: 3}

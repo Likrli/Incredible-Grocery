@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: blackberry
   m_EditorClassIdentifier: 
-  _idProduct: 6
-  _nameProduct: blackberry
-  _spriteProduct: {fileID: 21300000, guid: 5c431538889747e4bac94433502bcbb3, type: 3}
+  productId: 6
+  productName: blackberry
+  productSprite: {fileID: 21300000, guid: 5c431538889747e4bac94433502bcbb3, type: 3}

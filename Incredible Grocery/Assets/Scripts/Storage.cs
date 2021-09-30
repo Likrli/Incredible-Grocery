@@ -4,25 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 public class Storage : MonoBehaviour
 {
-    [SerializeField] private int _numberRightProducts;
-    [SerializeField] private Toggle[] _products;
-    [SerializeField] private Image[] ImgToggles;
-    [SerializeField] private Image[] ImgCollectedProducts;
-    [SerializeField] private Image[] Checkmark;
-    [SerializeField] private Sprite[] _badgeCheckmark; // 0 - canceled, 1 - selected
-    [SerializeField] private GameObject _buttonSell;
-    [SerializeField] private GameObject _bubleCollectedOrder;
-    [SerializeField] private GameObject[] _collectedProducts; //Mus for show ordered products 1-3(incl)
-    [SerializeField] private Animator _animController;
+    [SerializeField] private int rightProductsAmount;
+    [SerializeField] private Toggle[] products;
+    [SerializeField] private Image[] toggleImgs;
+    [SerializeField] private Image[] collectedProductsImgs;
+    [SerializeField] private Image[] checkmarkImgs;
+    [SerializeField] private Sprite cancelledBadge;
+    [SerializeField] private Sprite selectedBadge;
+    [SerializeField] private Button sell;
+    [SerializeField] private Image sellImg;
+    [SerializeField] private GameObject collectedOrderBubble;
+    [SerializeField] private GameObject[] collectedProducts;
+    [SerializeField] private Animator storageAnimator;
+    private const string Show = "Show";
+    private const string Hide = "Hide";
+    private int _selectedProductsNumber;
+    private bool _wasHappyBuyer;
     private GameController _gameController;
     private AudioManager _audioManager;
-    private int _numberCollectedProducts;
-    private bool _emotionBuyer;
-    public delegate void GetEmotions(bool emotion);
-    public event GetEmotions Emotion;
 
-    public delegate void GetCash(bool emotion, int numberRightProducts);
-    public event GetCash CashFlow;
+    public delegate void OnReceivedEmotion(bool emotion);
+    public event OnReceivedEmotion ReceivedEmotion;
+
+    public delegate void OnReceivedCash(bool emotion, int numberRightProducts);
+    public event OnReceivedCash ReceivedCash;
 
     private void Start()
     {
@@ -32,127 +37,125 @@ public class Storage : MonoBehaviour
 
     public void ShowStorage()
     {
-        foreach (var product in _products) //Remove products choices
+        foreach (var product in products)
         {
             product.isOn = false;
         }
-        _animController.SetTrigger("Show");
+        storageAnimator.SetTrigger(Show);
     }
 
-    public void ChooseProduct(int idChooseProduct) //Player choose product of Storage and set id in this method (OnalueChanged)
+    public void ChooseProduct(int idChooseProduct)
     {
-        _audioManager.PlayClip(2, AudioManager.Clip.SelectProduct); //Play clip choose product
-        if (_products[idChooseProduct].isOn)
+        _audioManager.PlayClip(AudioManager.Clip.SelectProduct); 
+        if (products[idChooseProduct].isOn)
         {
-            ImgToggles[idChooseProduct].color = ChangeAlphaColor(alpha: .3f); //Change alfa Image on 30% if product choice
-            _numberCollectedProducts++; //Inc var current products 
+            toggleImgs[idChooseProduct].color = ChangeAlphaColor(color: toggleImgs[idChooseProduct].color, alpha: .3f);
+            _selectedProductsNumber++;
         }
         else
         {
-            ImgToggles[idChooseProduct].color = Color.white;
-            _numberCollectedProducts--;
+            toggleImgs[idChooseProduct].color = Color.white;
+            _selectedProductsNumber--;
         }
-        ActivateBtnSell(); //Call method for check player can be able take btn Sell
+        ActivateBtnSell();
     }
 
     private void ActivateBtnSell()
     {
-        if (_numberCollectedProducts != _gameController.NumberOrderedProducts) 
+        if (_selectedProductsNumber != _gameController.OrderedProductsNymber) 
         {
-            _buttonSell.GetComponent<Button>().interactable = false;
-            _buttonSell.GetComponent<Image>().color = ChangeAlphaColor(alpha: .5f);
+            sell.interactable = false;
+            sellImg.color = ChangeAlphaColor(color: sellImg.color, alpha: .5f);
         }
         else
         {
-            _buttonSell.GetComponent<Button>().interactable = true;
-            _buttonSell.GetComponent<Image>().color = Color.white;
+            sell.GetComponent<Button>().interactable = true;
+            sellImg.color = Color.white;
         }
     }
 
-    private Color ChangeAlphaColor(float alpha)
+    private Color ChangeAlphaColor(Color color, float alpha)
     {
-        Color color;
-        color = Color.white;
         color.a = alpha;
         return color;
     }
 
-    public void HideStorage() //This funct call when player take btn Sell 
+    public void HideStorage()
     {
-        for (int i = 0; i < _collectedProducts.Length; i++)
+        for (int i = 0; i < collectedProducts.Length; i++)
         {
-            _collectedProducts[i].GetComponent<Toggle>().isOn = false; //Remove products Checkmark (correct product true|false) 
-            _collectedProducts[i].SetActive(false); //Disable all obj if it`s not first buyer
+            collectedProducts[i].GetComponent<Toggle>().isOn = false;
+            collectedProducts[i].SetActive(false);
         }
-        _animController.SetTrigger("Hide");
+        storageAnimator.SetTrigger(Hide);
         StartCoroutine(ShowCollectedProducts());
     }
     private IEnumerator ShowCollectedProducts()
     {
         yield return new WaitForSeconds(1f);
         List<int> collectedProductsId = new List<int>();
-        for (int i = 0; i < _products.Length; i++)
+        for (int i = 0; i < products.Length; i++)
         {
-            if (_products[i].isOn)
+            if (products[i].isOn)
             {
-                collectedProductsId.Add(i); //Save (id) collected products which isOn into List 
+                collectedProductsId.Add(i);
             }
         }
-        _bubleCollectedOrder.SetActive(true);
-        _audioManager.PlayClip(1, AudioManager.Clip.SpawnBuble);
-        for (int i = 0; i < _gameController.NumberOrderedProducts; i++)
+        collectedOrderBubble.SetActive(true);
+        _audioManager.PlayClip(AudioManager.Clip.SpawnBuble);
+        for (int i = 0; i < _gameController.OrderedProductsNymber; i++)
         {
-            _collectedProducts[i].SetActive(true);
-            ImgCollectedProducts[i].sprite = _gameController.AllProducts[collectedProductsId[i]].SpriteProduct; //Important: Id product need = index product in Products
+            collectedProducts[i].SetActive(true);
+            collectedProductsImgs[i].sprite = _gameController.AllProducts[collectedProductsId[i]].ProductSprite;
         }
-        yield return new WaitForSeconds(1f); //Start check collected products until 1 sec
+        yield return new WaitForSeconds(1f);
 
-        _emotionBuyer = true;
-        _numberRightProducts = 0; // Var for save info how much products collected right
+        _wasHappyBuyer = true;
+        rightProductsAmount = 0;
 
-        for (int i = 0; i < Checkmark.Length; i++) // Refresh Checkmark of collected products for purchase (if it`s not first buyer)
+        for (int i = 0; i < checkmarkImgs.Length; i++)
         {
-            Checkmark[i].sprite = _badgeCheckmark[1]; 
+            checkmarkImgs[i].sprite = selectedBadge; 
         }
-        for (int i = 0; i < _gameController.NumberOrderedProducts; i++)
+        for (int i = 0; i < _gameController.OrderedProductsNymber; i++)
         {
-            CheckSelectedProducts(numberProduct: i, selectedProductsId: collectedProductsId); //Check collect products on correct with products which order buyer
+            CheckSelectedProducts(numberProduct: i, selectedProductsId: collectedProductsId);
             yield return new WaitForSeconds(.5f);
         }
 
         yield return new WaitForSeconds(1f);
 
-        _bubleCollectedOrder.SetActive(false);
-        _audioManager.PlayClip(1, AudioManager.Clip.CloseBuble);
-        Emotion?.Invoke(_emotionBuyer);
-        CashFlow?.Invoke(_emotionBuyer, _numberRightProducts);
+        collectedOrderBubble.SetActive(false);
+        _audioManager.PlayClip(AudioManager.Clip.CloseBuble);
+        ReceivedEmotion?.Invoke(_wasHappyBuyer);
+        ReceivedCash?.Invoke(_wasHappyBuyer, rightProductsAmount);
     }
 
     private void CheckSelectedProducts(int numberProduct, List<int> selectedProductsId)
     {
-        for (int i = 0; i < _gameController.NumberOrderedProducts; i++)
+        for (int i = 0; i < _gameController.OrderedProductsNymber; i++)
         {
-            if(_gameController.IdOrderedProducts[i] == selectedProductsId[numberProduct])
+            if(_gameController.OrderedProductsId[i] == selectedProductsId[numberProduct])
             {
-                _numberRightProducts++;
-                Checkmark[numberProduct].sprite = _badgeCheckmark[1];
+                rightProductsAmount++;
+                checkmarkImgs[numberProduct].sprite = selectedBadge;
                 break;
             }
             else
             {
-                Checkmark[numberProduct].sprite = _badgeCheckmark[0];
+                checkmarkImgs[numberProduct].sprite = cancelledBadge;
             }
         }
-        for (int i = 0; i < Checkmark.Length; i++)
+        for (int i = 0; i < checkmarkImgs.Length; i++)
         {
-            if(Checkmark[i].sprite == _badgeCheckmark[0])
+            if(checkmarkImgs[i].sprite == cancelledBadge)
             {
-                _emotionBuyer = false;
+                _wasHappyBuyer = false;
                 Debug.Log("Emotion will be negative :(");
                 break;
             }
         }
-        _collectedProducts[numberProduct].GetComponent<Toggle>().isOn = true;
+        collectedProducts[numberProduct].GetComponent<Toggle>().isOn = true;
     }
 
 }

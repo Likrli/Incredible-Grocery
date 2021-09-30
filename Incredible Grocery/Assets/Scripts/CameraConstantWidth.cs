@@ -2,22 +2,22 @@ using UnityEngine;
 
 public class CameraConstantWidth : MonoBehaviour
 {
-    public Vector2 DefaultResolution = new Vector2(1920, 1080);
-    [Range(0f, 1f)] public float WidthOrHeight = 0;
+    [SerializeField] private Vector2 DefaultResolution = new Vector2(1920, 1080);
+    [Range(0f, 1f)] [SerializeField] private float WidthOrHeight = 0;
 
-    private Camera p_componentCamera;
+    private Camera _componentCamera;
 
-    private float p_initialSize;
-    private float p_targetAspect;
+    private float _initialSize;
+    private float _targetAspect;
 
     private void Start()
     {
-        p_componentCamera = GetComponent<Camera>(); 
+        _componentCamera = GetComponent<Camera>(); 
 
-        p_initialSize = p_componentCamera.orthographicSize;
-        p_targetAspect = DefaultResolution.x / DefaultResolution.y;
+        _initialSize = _componentCamera.orthographicSize;
+        _targetAspect = DefaultResolution.x / DefaultResolution.y;
 
-        float p_constantWidthSize = p_initialSize * (p_targetAspect / p_componentCamera.aspect);
-        p_componentCamera.orthographicSize = Mathf.Lerp(p_constantWidthSize, p_initialSize, WidthOrHeight);
+        float p_constantWidthSize = _initialSize * (_targetAspect / _componentCamera.aspect);
+        _componentCamera.orthographicSize = Mathf.Lerp(p_constantWidthSize, _initialSize, WidthOrHeight);
     }
 }

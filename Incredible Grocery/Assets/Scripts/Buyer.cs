@@ -3,48 +3,44 @@ using System.Collections;
 
 public class Buyer : MonoBehaviour
 {
-    [SerializeField] private float _stepBuyer;
-    [SerializeField] private float _progress;
-    [SerializeField] private Vector2 _pointBuy;
-    [SerializeField] private Vector2 _pointExit;
-    [SerializeField] private GameObject _bubleEmotions;
-    [SerializeField] private SpriteRenderer _rendererEmotions;
-    [SerializeField] private Sprite[] _badgeEmotions;
-    private Animator _animatorBuyer;
+    [SerializeField] private float buyerStep;
+    [SerializeField] private float progress;
+    [SerializeField] private Vector2 buyPoint;
+    [SerializeField] private Vector2 exitPoint;
+    [SerializeField] private GameObject emotionBubble;
+    [SerializeField] private SpriteRenderer emotionRenderer;
+    [SerializeField] private Sprite positiveEmotion;
+    [SerializeField] private Sprite negativeEmotion;
+    private const string Walk = "Walk";
+    private Animator _buyerAnimator;
     private Storage _storage;
     private AudioManager _audioManager;
     private GameController _gameController;
 
     private void Start()
     {
-        _animatorBuyer = GetComponent<Animator>();
-        StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _pointBuy));
+        _buyerAnimator = GetComponent<Animator>();
+        StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: buyPoint));
     }
 
     private IEnumerator MoveBuyer(Vector2 currentPosition, Vector2 desiredPosition)
     {
-        _progress = 0;
-        _animatorBuyer.SetBool(name: "Walk", value: true);
-        while (_progress < 1)
+        progress = 0;
+        _buyerAnimator.SetBool(name: Walk, value: true);
+        while (progress < 1)
         {
-            transform.position = Vector2.Lerp(currentPosition, desiredPosition, _progress);
-            _progress += _stepBuyer;
+            transform.position = Vector2.Lerp(currentPosition, desiredPosition, progress);
+            progress += buyerStep;
             yield return new WaitForFixedUpdate();
         }
-        _animatorBuyer.SetBool(name: "Walk", value: false);
+        _buyerAnimator.SetBool(name: Walk, value: false);
     }
 
     private void OnShowEmotion(bool emotion)
     {
-        _audioManager.PlayClip(1, AudioManager.Clip.SpawnBuble);
-        _bubleEmotions.SetActive(true);
-        switch (emotion)
-        {
-            case true:  _rendererEmotions.sprite = _badgeEmotions[1];
-                break;
-            case false: _rendererEmotions.sprite = _badgeEmotions[0];
-                break;
-        }
+        _audioManager.PlayClip(AudioManager.Clip.SpawnBuble);
+        emotionBubble.SetActive(true);
+        emotionRenderer.sprite = emotion? positiveEmotion : negativeEmotion;
         StartCoroutine(ExitGrocery());
     }
 
@@ -53,10 +49,10 @@ public class Buyer : MonoBehaviour
         yield return new WaitForSeconds(1f);
         transform.localScale = new Vector2(-1, 1);
         yield return new WaitForSeconds(.5f);
-        StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _pointExit));
+        StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: exitPoint));
         yield return new WaitForSeconds(1f);
-        _audioManager.PlayClip(1, AudioManager.Clip.CloseBuble);
-        _bubleEmotions.SetActive(false);
+        _audioManager.PlayClip(AudioManager.Clip.CloseBuble);
+        emotionBubble.SetActive(false);
     }
 
 
@@ -67,13 +63,13 @@ public class Buyer : MonoBehaviour
             _audioManager = collision.GetComponent<AudioManager>();
             _gameController = collision.GetComponent<GameController>();
             _storage = collision.GetComponent<Storage>();
-            _storage.Emotion += OnShowEmotion;
+            _storage.ReceivedEmotion += OnShowEmotion;
             _gameController.ServeBuyer();
         }
         if (collision.TryGetComponent(out Exit exit))
         {
             _gameController.GenerateBuyer();
-            _storage.Emotion -= OnShowEmotion;
+            _storage.ReceivedEmotion -= OnShowEmotion;
             Destroy(gameObject);
         }
     }

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: broccoli
   m_EditorClassIdentifier: 
-  _idProduct: 12
-  _nameProduct: broccoli
-  _spriteProduct: {fileID: 21300000, guid: 518522c8d04206a4c99a119048ad562d, type: 3}
+  productId: 12
+  productName: broccoli
+  productSprite: {fileID: 21300000, guid: 518522c8d04206a4c99a119048ad562d, type: 3}

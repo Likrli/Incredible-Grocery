@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 2049492726}
   - component: {fileID: 2049492727}
   m_Layer: 0
-  m_Name: BubleEmotions
+  m_Name: EmotionBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -233,15 +233,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a6a5132a5706d468c8181056bff780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stepBuyer: 0.005
-  _progress: 0
-  _pointBuy: {x: -4.5, y: -1}
-  _pointExit: {x: -11, y: 1.2}
-  _bubleEmotions: {fileID: 2049492725}
-  _rendererEmotions: {fileID: 1097690729}
-  _badgeEmotions:
-  - {fileID: 21300000, guid: abe2026ed9b630d43b665bc20ce227ae, type: 3}
-  - {fileID: 21300000, guid: e3e22e1080ee4d540bed0275ebe4e090, type: 3}
+  buyerStep: 0.005
+  progress: 0
+  buyPoint: {x: -4.5, y: -1}
+  exitPoint: {x: -11, y: 0.2}
+  emotionBubble: {fileID: 2049492725}
+  emotionRenderer: {fileID: 1097690729}
+  positiveEmotion: {fileID: 21300000, guid: e3e22e1080ee4d540bed0275ebe4e090, type: 3}
+  negativeEmotion: {fileID: 21300000, guid: abe2026ed9b630d43b665bc20ce227ae, type: 3}
 --- !u!61 &1394391170
 BoxCollider2D:
   m_ObjectHideFlags: 0

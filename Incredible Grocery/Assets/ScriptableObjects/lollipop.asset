@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c9f20644297a645bde50a187e09f8f, type: 3}
   m_Name: lollipop
   m_EditorClassIdentifier: 
-  _idProduct: 17
-  _nameProduct: lollipop
-  _spriteProduct: {fileID: 21300000, guid: 02f704c6245417a4d86b2c103778d9ef, type: 3}
+  productId: 17
+  productName: lollipop
+  productSprite: {fileID: 21300000, guid: 02f704c6245417a4d86b2c103778d9ef, type: 3}
