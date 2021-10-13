@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: lollipop
   m_EditorClassIdentifier: 
   productId: 17
+  productAmount: 1
   productName: lollipop
   productSprite: {fileID: 21300000, guid: 02f704c6245417a4d86b2c103778d9ef, type: 3}

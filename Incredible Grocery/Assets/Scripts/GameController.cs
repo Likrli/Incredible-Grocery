@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,20 +5,23 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private int orderedProductsNumber;
-    [SerializeField] private Text cashAmount;
-
-    [SerializeField] private Products[] allProducts;
     [SerializeField] private List<int> orderedProductsId;
-
+    [SerializeField] private Products[] allProducts;
+    [SerializeField] private Text cashAmount;
+    [SerializeField] private Transform[] points;
     [SerializeField] private GameObject buyer;
-    [SerializeField] private GameObject orderBubble;
-    [SerializeField] private GameObject[] orderedProducts;
-    [SerializeField] private Button[] allButtons;
-
+    [SerializeField] private GameObject notification;
+    [SerializeField] private GameObject mainCanvas;
     public int OrderedProductsNumber => orderedProductsNumber;
-    public Products[] AllProducts =>  allProducts;
+    public Products[] AllProducts => allProducts;
     public List<int> OrderedProductsId => orderedProductsId;
+    public List<Buyer> BuyersQueue => _buyersQueue;
+    public Transform[] Points => points;
+    public delegate void OnRivesedQueue();
+    public event OnRivesedQueue RivesedQueue;
 
+    private List<Buyer> _buyersQueue = new List<Buyer>();
+    private List<Buyer> _buyersInStore = new List<Buyer>();
     private Storage _storage;
     private SaveData _saveData;
     private AudioManager _audioManager;
@@ -27,16 +29,17 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        _saveData = GetComponent<SaveData>();
-        _audioManager = GetComponent<AudioManager>();
+        _saveData = SaveData.instance;
+        _audioManager = _saveData.audioManager;
         _storage = GetComponent<Storage>();
         _saveData.RecalculatedCash += UpdateTextCash;
+        _saveData.ReceivedNotification += ShowNotification;
         _storage.ReceivedCash += OnGetCash;
-        GenerateBuyer();
+        GenerateBuyers();
         UpdateTextCash(_saveData.Cash);
-        foreach (var button in allButtons)
+        for (int i = 0; i < allProducts.Length; i++)
         {
-            button.onClick.AddListener(PlaySoundsButton);
+            allProducts[i].ProductAmount = _saveData.product.productsAmount[i];
         }
     }
 
@@ -44,52 +47,43 @@ public class GameController : MonoBehaviour
     {
         cashAmount.text = $"$ {cash}";
     }
-    public void GenerateBuyer() => Invoke(nameof(SpawnBuyer), 1f);
+    private void ShowNotification(int value)
+    {
+        _audioManager.PlayClip(value > 0 ? AudioManager.Clip.MoneyEarned : AudioManager.Clip.MoneySpent);
+        Notification newNotification = Instantiate(notification.GetComponent<Notification>(), mainCanvas.transform);
+        newNotification.SetNotificate(value);
+    }
+
+    public void GenerateBuyers() => InvokeRepeating(nameof(SpawnBuyer), Random.Range(5f, 10f), Random.Range(5f, 10f));
     private void SpawnBuyer()
     {
-        Instantiate(buyer);
+        if (_buyersInStore.Count < 3)
+        {
+            _buyersQueue.Add(Instantiate(buyer).GetComponent<Buyer>());
+            _buyersInStore.Clear();
+            _buyersInStore.AddRange(_buyersQueue);
+        }
     }
-    public void ServeBuyer()
+    public void ChangeBuyersQueue(Buyer servedBuyer)
     {
-        StartCoroutine(OrderGeneration());
+        _buyersQueue.Remove(servedBuyer);
+        RivesedQueue?.Invoke();
     }
-    private IEnumerator OrderGeneration()
+    public void SayGoodbyeBuyer(Buyer buyer)
     {
-        Debug.Log("Buyer selects a product..");
-        yield return new WaitForSeconds(1.5f);
-        SelectProducts();
-        yield return new WaitForSeconds(5f);
-        orderBubble.SetActive(false);
-        _audioManager.PlayClip(AudioManager.Clip.CloseBuble);
+        _buyersInStore.Remove(buyer);
+    }
+    public void ServeBuyer(int newOrderedProductsNumber, List<int> newOrderedProductsId)
+    {
+        orderedProductsId.Clear();
+        orderedProductsId.AddRange(newOrderedProductsId);
+        orderedProductsNumber = newOrderedProductsNumber;
         _storage.ShowStorage();
     }
-    private void SelectProducts()
+    public void RefreshProducts(int productId, bool isAdded)
     {
-        _audioManager.PlayClip(AudioManager.Clip.SpawnBuble); 
-        orderBubble.SetActive(true);
-        for (int i = 0; i < orderedProducts.Length; i++)
-        {
-            orderedProducts[i].SetActive(false); 
-        }
-        orderedProductsNumber = Random.Range(1, 4);
-        List<int> allProductsId = new List<int>();
-        List<Sprite> allProductsSprite = new List<Sprite>();
-        foreach (var product in allProducts)
-        {
-            allProductsId.Add(product.ProductId);
-            allProductsSprite.Add(product.ProductSprite);
-        }
-        orderedProductsId.Clear();
-        for (int i = 0; i < orderedProductsNumber; i++)
-        {
-            int selectedProduct = Random.Range(0, allProductsId.Count);
-            orderedProductsId.Add(allProductsId[selectedProduct]);
-            orderedProducts[i].SetActive(true); 
-            orderedProducts[i].GetComponent<Image>().sprite = allProductsSprite[selectedProduct];
-            Debug.Log($"Ordered product with id: {allProductsId[selectedProduct]}");
-            allProductsId.RemoveAt(selectedProduct);
-            allProductsSprite.RemoveAt(selectedProduct);
-        }
+        _saveData.product.productsAmount[productId] = isAdded ? _saveData.product.productsAmount[productId] + 1 : _saveData.product.productsAmount[productId] - 1;
+        allProducts[productId].ProductAmount = _saveData.product.productsAmount[productId];
     }
     private void OnGetCash(bool wasHappyBuyer, int rightProductsAmount)
     {
@@ -99,6 +93,7 @@ public class GameController : MonoBehaviour
             _saveData.SaveCash(newCash: rightProductsAmount * (wasHappyBuyer? 20 : 10));
         }
     }
+
     private void PlaySoundsButton()
     {
         _audioManager.PlayClip(clip: AudioManager.Clip.ClickButton);

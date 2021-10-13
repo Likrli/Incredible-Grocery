@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: blackberry
   m_EditorClassIdentifier: 
   productId: 6
+  productAmount: 3
   productName: blackberry
   productSprite: {fileID: 21300000, guid: 5c431538889747e4bac94433502bcbb3, type: 3}

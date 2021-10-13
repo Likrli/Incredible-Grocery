@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: apple
   m_EditorClassIdentifier: 
   productId: 0
+  productAmount: 6
   productName: apple
   productSprite: {fileID: 21300000, guid: e4db3a097ba0a3c42bec22fb64ac0c23, type: 3}

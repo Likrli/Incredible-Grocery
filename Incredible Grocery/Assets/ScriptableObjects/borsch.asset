@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: borsch
   m_EditorClassIdentifier: 
   productId: 9
+  productAmount: 2
   productName: borsch
   productSprite: {fileID: 21300000, guid: 93c93ae98f8232a49b2c0f87b4ca52ff, type: 3}

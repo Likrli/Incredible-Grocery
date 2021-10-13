@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: candies
   m_EditorClassIdentifier: 
   productId: 18
+  productAmount: 1
   productName: candies
   productSprite: {fileID: 21300000, guid: f6d8c42eb67620349b1fa7d4ec3a82f7, type: 3}

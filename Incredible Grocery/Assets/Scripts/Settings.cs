@@ -7,20 +7,23 @@ public class Settings : MonoBehaviour
     [SerializeField] private Button musicButton;
     [SerializeField] private Button saveButton;
     [SerializeField] private Button settingButton;
-    [SerializeField] private Sprite[] spritesButtons;
-    [SerializeField] private Image[] imagesButtons;
+    [SerializeField] private Sprite greenButton;
+    [SerializeField] private Sprite redButton;
+    [SerializeField] private GameObject sounds;
+    [SerializeField] private GameObject music;
     [SerializeField] private Text soundsLabel;
     [SerializeField] private Text musicLabel;
     [SerializeField] private GameObject settingsMenu;
-    [SerializeField] private SaveData saveData;
+    private SaveData _saveData;
     private const string On = "ON";
     private const string Off = "OFF";
     private bool _isSoundsOn;
     private bool _isMusicOn;
     public void Start()
     {
-        _isSoundsOn = saveData.Sounds == 0;
-        _isMusicOn = saveData.Music == 0;
+        _saveData = SaveData.instance;
+        _isSoundsOn = _saveData.Sounds == 0;
+        _isMusicOn = _saveData.Music == 0;
         soundsButton.onClick.AddListener(SwitchSounds);
         musicButton.onClick.AddListener(SwitchMusic);
         saveButton.onClick.AddListener(CloseSettingsMenu);
@@ -29,31 +32,31 @@ public class Settings : MonoBehaviour
     }
     public void RefreshSettingsPanel()
     {
-        RefreshSoundsButton(spriteNumber: saveData.Sounds, labelText: saveData.Sounds == 0 ? On : Off);
-        RefreshMusicButton(spriteNumber: saveData.Music, labelText: saveData.Music == 0 ? On : Off);
+        RefreshSoundsButton(soundsValue: _saveData.Sounds, labelText: _saveData.Sounds == 0 ? On : Off);
+        RefreshMusicButton(musicValue: _saveData.Music, labelText: _saveData.Music == 0 ? On : Off);
     }
 
     public void SwitchSounds()
     {
         _isSoundsOn = !_isSoundsOn;
-        saveData.SaveOptions(isSound: true, value: _isSoundsOn? 0 : 1);
-        RefreshSoundsButton(spriteNumber: saveData.Sounds, labelText: saveData.Sounds == 0 ? On : Off);
+        _saveData.SaveOptions(isSound: true, value: _isSoundsOn? 0 : 1);
+        RefreshSoundsButton(soundsValue: _saveData.Sounds, labelText: _saveData.Sounds == 0 ? On : Off);
     }
 
     public void SwitchMusic()
     {
         _isMusicOn = !_isMusicOn;
-        saveData.SaveOptions(isSound: false, value: _isMusicOn? 0 : 1);
-        RefreshMusicButton(spriteNumber: saveData.Music, labelText: saveData.Music == 0 ? On : Off);
+        _saveData.SaveOptions(isSound: false, value: _isMusicOn? 0 : 1);
+        RefreshMusicButton(musicValue: _saveData.Music, labelText: _saveData.Music == 0 ? On : Off);
     }
-    private void RefreshSoundsButton(int spriteNumber, string labelText)
+    private void RefreshSoundsButton(int soundsValue, string labelText)
     {
-        imagesButtons[0].sprite = spritesButtons[spriteNumber];
+        sounds.GetComponent<Image>().sprite = soundsValue == 0 ? greenButton : redButton;
         soundsLabel.text = labelText;
     }
-    private void RefreshMusicButton(int spriteNumber, string labelText)
+    private void RefreshMusicButton(int musicValue, string labelText)
     {
-        imagesButtons[1].sprite = spritesButtons[spriteNumber];
+        music.GetComponent<Image>().sprite = musicValue == 0 ? greenButton : redButton;
         musicLabel.text = labelText;
     }
     private void OpenSettingsMenu()

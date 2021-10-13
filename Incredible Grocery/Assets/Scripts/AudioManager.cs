@@ -1,17 +1,25 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Audio;
+using System.Collections.Generic;
+
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mainMixer;
     [SerializeField] private AudioSource[] allAudioSources;
     [SerializeField] private AudioClip[] allClips;
+    public AudioClip[] AllClips => allClips;
+
     public enum Clip
     {
-        SpawnBuble,
-        CloseBuble,
+        SpawnBubble,
+        CloseBubble,
         ClickButton,
         Money,
-        SelectProduct
+        SelectProduct,
+        BadService,
+        MoneyEarned,
+        MoneySpent
     }
     private SaveData _saveData;
 
@@ -31,9 +39,17 @@ public class AudioManager : MonoBehaviour
     {
         mainMixer.audioMixer.SetFloat("MusicVolume", value * -80);
     }
+    public void AddListenerButtons(Button button)
+    {
+        button.onClick.AddListener(PlaySoundsButton);
+    }
 
     public void PlayClip(Clip clip)
     {
         allAudioSources[(clip == Clip.ClickButton ? 1 : 0)].PlayOneShot(allClips[(int)clip]);
+    }
+    private void PlaySoundsButton()
+    {
+        PlayClip(clip: AudioManager.Clip.ClickButton);
     }
 }
