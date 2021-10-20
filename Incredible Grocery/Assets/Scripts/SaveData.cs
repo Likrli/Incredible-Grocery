@@ -3,131 +3,97 @@ using System.IO;
 
 public class SaveData : MonoBehaviour
 {
-    public static SaveData instance;
-    public Product product;
-    public AudioManager audioManager;
-    public int Cash => _cash;
-    public int Sounds => _sounds;
-    public int Music => _music;
-    public bool WasLoaded => _wasLoaded;
+    public static SaveData Instance;
 
-    private int _cash;
-    private int _sounds;
-    private int _music;
-    private bool _wasLoaded;
+    public delegate void SetSoundsHandler(bool value);
+    public event SetSoundsHandler SetSounds;
 
-    private const string KeyLaunch = "fLaunch";
-    private const string KeyCash = "Cash";
-    private const string KeySounds = "Sounds";
-    private const string KeyMusic = "Music";
+    public delegate void SetMusicHandler(bool value);
+    public event SetMusicHandler SetMusic;
+
+    public delegate void RecalculatedCashHandler(int allCash);
+    public event RecalculatedCashHandler RecalculatedCash;
+
+    public delegate void ReceivedNotificationHandler(int valueNotification);
+    public event ReceivedNotificationHandler ReceivedNotification;
+
+    public Data AllData => _allData;
+    private Data _allData;
+
     private const string DataJson = "Data.json";
     private string _path;
 
-    public delegate void OnSetSounds(int value);
-    public event OnSetSounds SetSounds;
-
-    public delegate void OnSetMusic(int value);
-    public event OnSetMusic SetMusic;
-
-    public delegate void OnRecalculatedCash(int allCash);
-    public event OnRecalculatedCash RecalculatedCash;
-
-    public delegate void OnReceivedNotification(int valueNotification);
-    public event OnReceivedNotification ReceivedNotification;
-
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }  
         else
         {
-            instance = this;
-            DontDestroyOnLoad(this.gameObject);
-            audioManager = GetComponent<AudioManager>();
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
+        _allData = new Data();
         _path = Path.Combine(Application.dataPath, DataJson);
     }
 
     public void LoadData()
     {
-        if (PlayerPrefs.HasKey(KeyLaunch))
+        if (File.Exists(_path))
         {
-            if (PlayerPrefs.GetInt(KeyLaunch) == 1)
-            {
-                TakeData();
-                _wasLoaded = true;
-            }
+            _allData = JsonUtility.FromJson<Data>(File.ReadAllText(_path));
+            _allData.wasLoaded = true;
         }
         else
         {
-            SetInitialValues();
+            SetDefaultValues();
+            _allData.wasLoaded = false;
         }
     }
-    public void SetInitialValues()
+    public void SetDefaultValues()
     {
-        _cash = 0;
-        _music = 0;
-        _sounds = 0;
-        _wasLoaded = false;
-        PlayerPrefs.SetInt(KeyCash, _cash);
-        PlayerPrefs.SetInt(KeySounds, _sounds);
-        PlayerPrefs.SetInt(KeyMusic, _music);
-        PlayerPrefs.SetInt(KeyLaunch, 1);
-        PlayerPrefs.Save();
-        product.productsAmount = new int[20];
-        for (int i = 0; i < product.productsAmount.Length; i++)
+        _allData.productsAmount = new int[20];
+        for (int i = 0; i < _allData.productsAmount.Length; i++)
         {
-            product.productsAmount[i] = 3;
+            _allData.productsAmount[i] = 3;
         }
-        File.WriteAllText(_path, JsonUtility.ToJson(product));
+        _allData.cash = 0;
+        _allData.isMusic = true;
+        _allData.isSounds = true;
+        File.WriteAllText(_path, JsonUtility.ToJson(_allData));
     }
 
     public void SaveCash(int newCash)
     {
-        _cash += newCash;
-        PlayerPrefs.SetInt(KeyCash, _cash);
-        PlayerPrefs.Save();
-        RecalculatedCash?.Invoke(_cash);
+        _allData.cash += newCash;
+        RecalculatedCash?.Invoke(_allData.cash);
         ReceivedNotification?.Invoke(newCash);
-        File.WriteAllText(_path, JsonUtility.ToJson(product));
+        File.WriteAllText(_path, JsonUtility.ToJson(_allData));
     }
-    public void SaveOptions(bool isSound, int value)
+    public void SaveOptions(bool isSounds, bool value)
     {
-        switch (isSound)
+        switch (isSounds)
         {
             case true:
-                _sounds = value;
-                PlayerPrefs.SetInt(KeySounds, _sounds);
-                SetSounds?.Invoke(_sounds);
+                _allData.isSounds = value;
+                SetSounds?.Invoke(_allData.isSounds);
                 break;
             case false:
-                _music = value;
-                PlayerPrefs.SetInt(KeyMusic, _music);
-                SetMusic?.Invoke(_music);
+                _allData.isMusic = value;
+                SetMusic?.Invoke(_allData.isMusic);
                 break;
         }
-        PlayerPrefs.Save();
-    }
-    public void TakeData()
-    {
-        _cash = PlayerPrefs.GetInt(KeyCash);
-        _sounds = PlayerPrefs.GetInt(KeySounds);
-        _music = PlayerPrefs.GetInt(KeyMusic);
-        if (File.Exists(_path))
-        {
-            product = JsonUtility.FromJson<Product>(File.ReadAllText(_path));
-        }
-        else
-        {
-            SetInitialValues();
-        }
+        File.WriteAllText(_path, JsonUtility.ToJson(_allData));
     }
 
     [System.Serializable]
-    public class Product
+    public class Data
     {
         public int[] productsAmount;
+        public int cash;
+        public bool isSounds;
+        public bool isMusic;
+        public bool wasLoaded;
     }
 }

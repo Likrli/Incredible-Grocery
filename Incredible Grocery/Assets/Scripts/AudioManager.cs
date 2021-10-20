@@ -1,13 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Audio;
-using System.Collections.Generic;
+
 
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mainMixer;
     [SerializeField] private AudioSource[] allAudioSources;
     [SerializeField] private AudioClip[] allClips;
+    public static AudioManager Instance;
     public AudioClip[] AllClips => allClips;
 
     public enum Clip
@@ -23,32 +23,39 @@ public class AudioManager : MonoBehaviour
     }
     private SaveData _saveData;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
     private void Start()
     {
-        _saveData = GetComponent<SaveData>();
+        _saveData = SaveData.Instance;
         _saveData.SetSounds += OnSetSounds;
         _saveData.SetMusic += OnSetMusic;
-        OnSetSounds(value: _saveData.Sounds);
-        OnSetMusic(value: _saveData.Music);
+        OnSetSounds(value: _saveData.AllData.isSounds);
+        OnSetMusic(value: _saveData.AllData.isMusic);
     }
-    public void OnSetSounds(int value)
+    private void OnSetSounds(bool value)
     {
-        mainMixer.audioMixer.SetFloat("SoundsVolume", value * -80);
+        mainMixer.audioMixer.SetFloat("SoundsVolume", -80 * (value ? 0 : 1));
     }
-    public void OnSetMusic(int value)
+    private void OnSetMusic(bool value)
     {
-        mainMixer.audioMixer.SetFloat("MusicVolume", value * -80);
+        mainMixer.audioMixer.SetFloat("MusicVolume", -80 * (value ? 0 : 1));
     }
-    public void AddListenerButtons(Button button)
-    {
-        button.onClick.AddListener(PlaySoundsButton);
-    }
-
     public void PlayClip(Clip clip)
     {
         allAudioSources[(clip == Clip.ClickButton ? 1 : 0)].PlayOneShot(allClips[(int)clip]);
     }
-    private void PlaySoundsButton()
+    public void PlaySoundsButton()
     {
         PlayClip(clip: AudioManager.Clip.ClickButton);
     }

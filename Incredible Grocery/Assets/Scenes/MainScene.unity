@@ -3543,7 +3543,6 @@ GameObject:
   - component: {fileID: 517312497}
   - component: {fileID: 517312496}
   - component: {fileID: 517312495}
-  - component: {fileID: 517312498}
   m_Layer: 5
   m_Name: OrderBtn
   m_TagString: Untagged
@@ -3653,18 +3652,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 517312493}
   m_CullTransparentMesh: 1
---- !u!114 &517312498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 517312493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -4227,7 +4214,6 @@ GameObject:
   - component: {fileID: 561399697}
   - component: {fileID: 561399696}
   - component: {fileID: 561399695}
-  - component: {fileID: 561399698}
   m_Layer: 5
   m_Name: SaveBtn
   m_TagString: Untagged
@@ -4337,18 +4323,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 561399693}
   m_CullTransparentMesh: 1
---- !u!114 &561399698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 561399693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &571232460
 GameObject:
   m_ObjectHideFlags: 0
@@ -5763,8 +5737,6 @@ GameObject:
   - component: {fileID: 757848573}
   - component: {fileID: 757848572}
   - component: {fileID: 757848576}
-  - component: {fileID: 757848575}
-  - component: {fileID: 757848579}
   - component: {fileID: 757848578}
   m_Layer: 0
   m_Name: PointEntry
@@ -5834,81 +5806,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
---- !u!114 &757848575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 757848570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87e32f6f53cab4d409d42c169200b37f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rightProductsAmount: 0
-  products:
-  - {fileID: 2035729280}
-  - {fileID: 973448584}
-  - {fileID: 682000383}
-  - {fileID: 1097253700}
-  - {fileID: 24381870}
-  - {fileID: 1554614282}
-  - {fileID: 435035020}
-  - {fileID: 1241531077}
-  - {fileID: 244082921}
-  - {fileID: 1721246735}
-  - {fileID: 1738299966}
-  - {fileID: 2022704955}
-  - {fileID: 1794083202}
-  - {fileID: 93377030}
-  - {fileID: 267870177}
-  - {fileID: 616790256}
-  - {fileID: 1841741826}
-  - {fileID: 457308891}
-  - {fileID: 740334845}
-  - {fileID: 508051976}
-  productsAmount:
-  - {fileID: 1996350037}
-  - {fileID: 1524949806}
-  - {fileID: 1349906817}
-  - {fileID: 702853697}
-  - {fileID: 493269469}
-  - {fileID: 1220531154}
-  - {fileID: 1838185372}
-  - {fileID: 1378251696}
-  - {fileID: 1924406491}
-  - {fileID: 1160885397}
-  - {fileID: 1471477156}
-  - {fileID: 1419592196}
-  - {fileID: 708111324}
-  - {fileID: 193978060}
-  - {fileID: 519996205}
-  - {fileID: 1507655851}
-  - {fileID: 1560783359}
-  - {fileID: 1557359578}
-  - {fileID: 812016564}
-  - {fileID: 1503644557}
-  collectedProductsImgs:
-  - {fileID: 1576973489}
-  - {fileID: 1923647488}
-  - {fileID: 1950500767}
-  checkmarkImgs:
-  - {fileID: 2035436510}
-  - {fileID: 1475915168}
-  - {fileID: 1637728485}
-  cancelledBadge: {fileID: 21300000, guid: 5fecac16413cf524fa49a6054333c78c, type: 3}
-  selectedBadge: {fileID: 21300000, guid: a89669bb147eb5a43b1f79236083b10c, type: 3}
-  sell: {fileID: 2100911345}
-  order: {fileID: 517312495}
-  closeWarehouse: {fileID: 1322262674}
-  sellImg: {fileID: 2100911346}
-  collectedOrderBubble: {fileID: 664464375}
-  collectedProducts:
-  - {fileID: 1689097567}
-  - {fileID: 1378354695}
-  - {fileID: 2127579335}
-  storageAnimator: {fileID: 1427507522}
 --- !u!114 &757848576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5921,7 +5818,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2046faa0ee834ca4080b2a56b656f49a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orderedProductsNumber: 0
   orderedProductsId: 
   allProducts:
   - {fileID: 11400000, guid: 105aae37cd482d34cb3ac9df14c5ac01, type: 2}
@@ -5953,6 +5849,17 @@ MonoBehaviour:
   buyer: {fileID: 3230293114455275945, guid: 038f6c97dbee827458fef3564774bc04, type: 3}
   notification: {fileID: 2221642038265177103, guid: 6e93e76bdea822143af47683b91b480d, type: 3}
   mainCanvas: {fileID: 441773061}
+  storage: {fileID: 2101504150}
+  allGameButtons:
+  - {fileID: 517312495}
+  - {fileID: 2100911345}
+  - {fileID: 1322262674}
+  - {fileID: 2003030013}
+  - {fileID: 1826671354}
+  - {fileID: 1913679158}
+  - {fileID: 561399695}
+  - {fileID: 2003030013}
+  - {fileID: 1301433949}
 --- !u!114 &757848578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5965,41 +5872,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bdc539b9279f204c9fce09a7c241fce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &757848579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 757848570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62bfd551d1e18f94cb416e2780c4c7b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  products:
-  - {fileID: 778264046}
-  - {fileID: 116410131}
-  - {fileID: 1756901891}
-  - {fileID: 459617992}
-  - {fileID: 1426844523}
-  - {fileID: 968904802}
-  - {fileID: 1514949481}
-  - {fileID: 461535670}
-  - {fileID: 44146377}
-  - {fileID: 1161992966}
-  - {fileID: 125236223}
-  - {fileID: 1290438131}
-  - {fileID: 883942360}
-  - {fileID: 618955617}
-  - {fileID: 117034523}
-  - {fileID: 1764935584}
-  - {fileID: 1561430312}
-  - {fileID: 812722832}
-  - {fileID: 856957209}
-  - {fileID: 1571360843}
-  orderButton: {fileID: 1301433949}
-  priceText: {fileID: 850261016}
 --- !u!1 &778264044
 GameObject:
   m_ObjectHideFlags: 0
@@ -9321,7 +9193,6 @@ GameObject:
   - component: {fileID: 1301433950}
   - component: {fileID: 1301433949}
   - component: {fileID: 1301433948}
-  - component: {fileID: 1301433952}
   m_Layer: 5
   m_Name: OrderBtn
   m_TagString: Untagged
@@ -9458,18 +9329,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1301433946}
   m_CullTransparentMesh: 1
---- !u!114 &1301433952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1301433946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1302741184
 GameObject:
   m_ObjectHideFlags: 0
@@ -9679,7 +9538,6 @@ GameObject:
   - component: {fileID: 1322262676}
   - component: {fileID: 1322262675}
   - component: {fileID: 1322262674}
-  - component: {fileID: 1322262677}
   m_Layer: 5
   m_Name: CloseWarehouse
   m_TagString: Untagged
@@ -9789,18 +9647,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1322262672}
   m_CullTransparentMesh: 1
---- !u!114 &1322262677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1322262672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1335406294
 GameObject:
   m_ObjectHideFlags: 0
@@ -16057,7 +15903,6 @@ GameObject:
   - component: {fileID: 1826671352}
   - component: {fileID: 1826671353}
   - component: {fileID: 1826671354}
-  - component: {fileID: 1826671355}
   m_Layer: 5
   m_Name: SwitchSounds
   m_TagString: Untagged
@@ -16167,18 +16012,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1826671355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826671350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1831386565
 GameObject:
   m_ObjectHideFlags: 0
@@ -16903,7 +16736,6 @@ GameObject:
   - component: {fileID: 1913679160}
   - component: {fileID: 1913679159}
   - component: {fileID: 1913679158}
-  - component: {fileID: 1913679161}
   m_Layer: 5
   m_Name: SwitchMusic
   m_TagString: Untagged
@@ -17013,18 +16845,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1913679156}
   m_CullTransparentMesh: 1
---- !u!114 &1913679161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1913679156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1923647486
 GameObject:
   m_ObjectHideFlags: 0
@@ -17615,7 +17435,6 @@ GameObject:
   - component: {fileID: 2003030014}
   - component: {fileID: 2003030013}
   - component: {fileID: 2003030016}
-  - component: {fileID: 2003030017}
   m_Layer: 5
   m_Name: SettingsBtn
   m_TagString: Untagged
@@ -17748,18 +17567,6 @@ MonoBehaviour:
   soundsLabel: {fileID: 1668481086}
   musicLabel: {fileID: 911239484}
   settingsMenu: {fileID: 1554347104}
---- !u!114 &2003030017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003030011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2007086068
 GameObject:
   m_ObjectHideFlags: 0
@@ -18628,7 +18435,6 @@ GameObject:
   - component: {fileID: 2100911347}
   - component: {fileID: 2100911346}
   - component: {fileID: 2100911345}
-  - component: {fileID: 2100911348}
   m_Layer: 5
   m_Name: SellBtn
   m_TagString: Untagged
@@ -18738,18 +18544,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2100911343}
   m_CullTransparentMesh: 1
---- !u!114 &2100911348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100911343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d289db301723c524f8bf2b43b364c50b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2101504143
 GameObject:
   m_ObjectHideFlags: 0
@@ -18763,6 +18557,8 @@ GameObject:
   - component: {fileID: 2101504146}
   - component: {fileID: 2101504145}
   - component: {fileID: 2101504147}
+  - component: {fileID: 2101504150}
+  - component: {fileID: 2101504149}
   m_Layer: 0
   m_Name: PointBuy
   m_TagString: Untagged
@@ -18939,6 +18735,118 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2101504149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101504143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62bfd551d1e18f94cb416e2780c4c7b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  products:
+  - {fileID: 778264046}
+  - {fileID: 116410131}
+  - {fileID: 1756901891}
+  - {fileID: 459617992}
+  - {fileID: 1426844523}
+  - {fileID: 968904802}
+  - {fileID: 1514949481}
+  - {fileID: 461535670}
+  - {fileID: 44146377}
+  - {fileID: 1161992966}
+  - {fileID: 125236223}
+  - {fileID: 1290438131}
+  - {fileID: 883942360}
+  - {fileID: 618955617}
+  - {fileID: 117034523}
+  - {fileID: 1764935584}
+  - {fileID: 1561430312}
+  - {fileID: 812722832}
+  - {fileID: 856957209}
+  - {fileID: 1571360843}
+  orderButton: {fileID: 1301433949}
+  priceText: {fileID: 850261016}
+  gameController: {fileID: 757848576}
+--- !u!114 &2101504150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101504143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87e32f6f53cab4d409d42c169200b37f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightProductsAmount: 0
+  products:
+  - {fileID: 2035729280}
+  - {fileID: 973448584}
+  - {fileID: 682000383}
+  - {fileID: 1097253700}
+  - {fileID: 24381870}
+  - {fileID: 1554614282}
+  - {fileID: 435035020}
+  - {fileID: 1241531077}
+  - {fileID: 244082921}
+  - {fileID: 1721246735}
+  - {fileID: 1738299966}
+  - {fileID: 2022704955}
+  - {fileID: 1794083202}
+  - {fileID: 93377030}
+  - {fileID: 267870177}
+  - {fileID: 616790256}
+  - {fileID: 1841741826}
+  - {fileID: 457308891}
+  - {fileID: 740334845}
+  - {fileID: 508051976}
+  productsAmount:
+  - {fileID: 1996350037}
+  - {fileID: 1524949806}
+  - {fileID: 1349906817}
+  - {fileID: 702853697}
+  - {fileID: 493269469}
+  - {fileID: 1220531154}
+  - {fileID: 1838185372}
+  - {fileID: 1378251696}
+  - {fileID: 1924406491}
+  - {fileID: 1160885397}
+  - {fileID: 1471477156}
+  - {fileID: 1419592196}
+  - {fileID: 708111324}
+  - {fileID: 193978060}
+  - {fileID: 519996205}
+  - {fileID: 1507655851}
+  - {fileID: 1560783359}
+  - {fileID: 1557359578}
+  - {fileID: 812016564}
+  - {fileID: 1503644557}
+  collectedProductsImgs:
+  - {fileID: 1576973489}
+  - {fileID: 1923647488}
+  - {fileID: 1950500767}
+  checkmarkImgs:
+  - {fileID: 2035436510}
+  - {fileID: 1475915168}
+  - {fileID: 1637728485}
+  cancelledBadge: {fileID: 21300000, guid: 5fecac16413cf524fa49a6054333c78c, type: 3}
+  selectedBadge: {fileID: 21300000, guid: a89669bb147eb5a43b1f79236083b10c, type: 3}
+  sell: {fileID: 2100911345}
+  order: {fileID: 517312495}
+  closeWarehouse: {fileID: 1322262674}
+  sellImg: {fileID: 2100911346}
+  collectedOrderBubble: {fileID: 664464375}
+  collectedProducts:
+  - {fileID: 1689097567}
+  - {fileID: 1378354695}
+  - {fileID: 2127579335}
+  storageAnimator: {fileID: 1427507522}
+  gameController: {fileID: 757848576}
 --- !u!1 &2103125717
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,18 +5,19 @@ public class Warehouse : MonoBehaviour
     [SerializeField] private Toggle[] products;
     [SerializeField] private Button orderButton;
     [SerializeField] private Text priceText;
+    [SerializeField] private GameController gameController;
+
     private int _orderedProductNumber;
     private int _priceProduct = 5;
     private int _orderPrice;
     private AudioManager _audioManager;
     private SaveData _saveData;
-    private GameController _gameController;
+   
     private void Start()
     {
-        _saveData = SaveData.instance;
-        _audioManager = _saveData.audioManager;
-        _gameController = GetComponent<GameController>();
-        orderButton.onClick.AddListener(BuyProducts);
+        _saveData = SaveData.Instance;
+        _audioManager = AudioManager.Instance;
+        orderButton.onClick.AddListener(OnClickedOrderButton);
         foreach (var product in products)
         {
             product.onValueChanged.AddListener(isOn => ChooseProduct(product));
@@ -47,17 +48,17 @@ public class Warehouse : MonoBehaviour
         {
             _orderPrice = _orderedProductNumber * _priceProduct;
             priceText.text = $"${_orderPrice}";
-            priceText.color = _saveData.Cash >= _orderPrice ? Color.green : Color.red;
-            orderButton.interactable = _orderedProductNumber > 0 && _saveData.Cash >= _orderPrice;
+            priceText.color = _saveData.AllData.cash >= _orderPrice ? Color.green : Color.red;
+            orderButton.interactable = _orderedProductNumber > 0 && _saveData.AllData.cash >= _orderPrice;
         }
     }
-    private void BuyProducts()
+    private void OnClickedOrderButton()
     {
         for (int i = 0; i < products.Length; i++)
         {
             if (products[i].isOn)
             {
-                _gameController.RefreshProducts(productId: i, isAdded: true);
+                gameController.RefreshProducts(productId: i, isAdded: true);
             }
         }
         _saveData.SaveCash(-_orderPrice);

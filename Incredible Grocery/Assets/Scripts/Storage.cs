@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 public class Storage : MonoBehaviour
@@ -18,15 +19,16 @@ public class Storage : MonoBehaviour
     [SerializeField] private GameObject collectedOrderBubble;
     [SerializeField] private GameObject[] collectedProducts;
     [SerializeField] private Animator storageAnimator;
+    [SerializeField] private GameController gameController;
 
-    public delegate void OnReceivedEmotion(bool emotion);
-    public event OnReceivedEmotion ReceivedEmotion;
+    public delegate void ReceivedEmotionHandler(bool emotion);
+    public event ReceivedEmotionHandler ReceivedEmotion;
 
-    public delegate void OnReceivedCash(bool emotion, int numberRightProducts);
-    public event OnReceivedCash ReceivedCash;
+    public delegate void ReceivedCashHandler(bool emotion, int numberRightProducts);
+    public event ReceivedCashHandler ReceivedCash;
 
-    public delegate void OnStoppedBuyersTime();
-    public event OnStoppedBuyersTime StoppedBuyersTime;
+    public delegate void StoppedBuyersTimeHandler();
+    public event StoppedBuyersTimeHandler StoppedBuyersTime;
 
     private const string Show = "Show";
     private const string Hide = "Hide";
@@ -35,18 +37,16 @@ public class Storage : MonoBehaviour
 
     private int _selectedProductsNumber;
     private bool _wasHappyBuyer;
-    private GameController _gameController;
     private AudioManager _audioManager;
     private Warehouse _warehouse;
 
     private void Start()
     {
-        _gameController = GetComponent<GameController>();
-        _audioManager = SaveData.instance.audioManager;
+        _audioManager = AudioManager.Instance;
         _warehouse = GetComponent<Warehouse>();
-        sell.onClick.AddListener(HideStorage);
-        order.onClick.AddListener(ShowWarehouse);
-        closeWarehouse.onClick.AddListener(CloseWarehouse);
+        sell.onClick.AddListener(OnClickedSellButton);
+        order.onClick.AddListener(OnClickedOrderButton);
+        closeWarehouse.onClick.AddListener(OnClickedCloseWarehouseButton);
         foreach (var product in products)
         {
             product.onValueChanged.AddListener(isOn => ChooseProduct(product));
@@ -62,31 +62,21 @@ public class Storage : MonoBehaviour
         {
             product.isOn = false;
         }
-        for (int i = 0; i < productsAmount.Length; i++)
-        {
-            productsAmount[i].text = $"x{_gameController.AllProducts[i].ProductAmount}";
-            products[i].GetComponentInChildren<Image>().color = _gameController.AllProducts[i].ProductAmount != 0 ? Color.white : ChangeAlphaColor(color: products[i].GetComponentInChildren<Image>().color, alpha: .3f);
-            products[i].interactable = _gameController.AllProducts[i].ProductAmount > 0 ? true : false; 
-        }
+        RefreshStorage();
         storageAnimator.SetTrigger(Show);
     }
-    private void ShowWarehouse()
+    private void OnClickedOrderButton()
     {
         _warehouse.RefreshWarehouse();
         storageAnimator.SetTrigger(WarehouseShow);
     }
-    private void CloseWarehouse()
+    private void OnClickedCloseWarehouseButton()
     {
         storageAnimator.SetTrigger(WarehouseHide);
-        for (int i = 0; i < productsAmount.Length; i++)
-        {
-            productsAmount[i].text = $"x{_gameController.AllProducts[i].ProductAmount}";
-            products[i].GetComponentInChildren<Image>().color = _gameController.AllProducts[i].ProductAmount != 0 ? Color.white : ChangeAlphaColor(color: products[i].GetComponentInChildren<Image>().color, alpha: .3f);
-            products[i].interactable = _gameController.AllProducts[i].ProductAmount > 0 ? true : false;
-        }
+        RefreshStorage();
     }
 
-    public void ChooseProduct(Toggle product)
+    private void ChooseProduct(Toggle product)
     {
         _audioManager.PlayClip(AudioManager.Clip.SelectProduct);
         _selectedProductsNumber += product.isOn == true ? 1 : -1;
@@ -95,7 +85,7 @@ public class Storage : MonoBehaviour
 
     private void ActivateBtnSell()
     {
-        if (_selectedProductsNumber != _gameController.OrderedProductsNumber) 
+        if (_selectedProductsNumber != gameController.OrderedProductsId.Count) 
         {
             sell.interactable = false;
             sellImg.color = ChangeAlphaColor(color: sellImg.color, alpha: .5f);
@@ -113,24 +103,33 @@ public class Storage : MonoBehaviour
         return color;
     }
 
-    public void HideStorage()
+    private void OnClickedSellButton()
     {
-        for (int i = 0; i < collectedProducts.Length; i++)
+        foreach (var collectedProduct in collectedProducts)
         {
-            collectedProducts[i].GetComponent<Toggle>().isOn = false;
-            collectedProducts[i].SetActive(false);
+            collectedProduct.GetComponent<Toggle>().isOn = false;
+            collectedProduct.SetActive(false);
         }
         storageAnimator.SetTrigger(Hide);
         StoppedBuyersTime?.Invoke();
         StartCoroutine(ShowCollectedProducts());
     }
-    public void RefreshStorage()
+    private void RefreshStorage()
+    {
+        for (int i = 0; i < productsAmount.Length; i++)
+        {
+            productsAmount[i].text = $"x{gameController.AllProducts[i].ProductAmount}";
+            products[i].GetComponentInChildren<Image>().color = gameController.AllProducts[i].ProductAmount != 0 ? Color.white : ChangeAlphaColor(color: products[i].GetComponentInChildren<Image>().color, alpha: .3f);
+            products[i].interactable = gameController.AllProducts[i].ProductAmount > 0;
+        }
+    }
+    public void ResetStorage()
     {
         sell.interactable = false;
-        for (int i = 0; i < collectedProducts.Length; i++)
+        foreach (var collectedProduct in collectedProducts)
         {
-            collectedProducts[i].GetComponent<Toggle>().isOn = false;
-            collectedProducts[i].SetActive(false);
+            collectedProduct.GetComponent<Toggle>().isOn = false;
+            collectedProduct.SetActive(false);
         }
         storageAnimator.ResetTrigger(Show);
         storageAnimator.SetTrigger(Hide);
@@ -148,60 +147,49 @@ public class Storage : MonoBehaviour
         }
         collectedOrderBubble.SetActive(true);
         _audioManager.PlayClip(AudioManager.Clip.SpawnBubble);
-        for (int i = 0; i < _gameController.OrderedProductsNumber; i++)
+        for (int i = 0; i < gameController.OrderedProductsId.Count; i++)
         {
             collectedProducts[i].SetActive(true);
-            collectedProductsImgs[i].sprite = _gameController.AllProducts[collectedProductsId[i]].ProductSprite;
-            _gameController.RefreshProducts(productId: collectedProductsId[i], isAdded: false);
+            collectedProductsImgs[i].sprite = gameController.AllProducts[collectedProductsId[i]].ProductSprite;
+            gameController.RefreshProducts(productId: collectedProductsId[i], isAdded: false);
         }
         yield return new WaitForSeconds(1f);
-
         _wasHappyBuyer = true;
         rightProductsAmount = 0;
-
-        for (int i = 0; i < checkmarkImgs.Length; i++)
+        foreach (var checkmark in checkmarkImgs)
         {
-            checkmarkImgs[i].sprite = selectedBadge; 
+            checkmark.sprite = selectedBadge;
         }
-        for (int i = 0; i < _gameController.OrderedProductsNumber; i++)
+        for (int i = 0; i < gameController.OrderedProductsId.Count; i++)
         {
-            CheckSelectedProducts(numberProduct: i, selectedProductsId: collectedProductsId);
+            CheckSelectedProducts(productNumber: i, selectedProductsId: collectedProductsId);
             yield return new WaitForSeconds(.5f);
         }
-
         yield return new WaitForSeconds(1f);
-
         collectedOrderBubble.SetActive(false);
         _audioManager.PlayClip(AudioManager.Clip.CloseBubble);
         ReceivedEmotion?.Invoke(_wasHappyBuyer);
         ReceivedCash?.Invoke(_wasHappyBuyer, rightProductsAmount);
     }
 
-    private void CheckSelectedProducts(int numberProduct, List<int> selectedProductsId)
+    private void CheckSelectedProducts(int productNumber, List<int> selectedProductsId)
     {
-        for (int i = 0; i < _gameController.OrderedProductsNumber; i++)
+        for (int i = 0; i < gameController.OrderedProductsId.Count; i++)
         {
-            if(_gameController.OrderedProductsId[i] == selectedProductsId[numberProduct])
+            if (gameController.OrderedProductsId.Contains(selectedProductsId[productNumber]))
             {
                 rightProductsAmount++;
-                checkmarkImgs[numberProduct].sprite = selectedBadge;
+                checkmarkImgs[productNumber].sprite = selectedBadge;
                 break;
             }
             else
             {
-                checkmarkImgs[numberProduct].sprite = cancelledBadge;
+                checkmarkImgs[productNumber].sprite = cancelledBadge;
             }
         }
-        for (int i = 0; i < checkmarkImgs.Length; i++)
-        {
-            if(checkmarkImgs[i].sprite == cancelledBadge)
-            {
-                _wasHappyBuyer = false;
-                Debug.Log("Emotion will be negative :(");
-                break;
-            }
-        }
-        collectedProducts[numberProduct].GetComponent<Toggle>().isOn = true;
+        var cancelledCheckmarks = from checkmark in checkmarkImgs where checkmark.sprite == cancelledBadge select checkmark;
+        _wasHappyBuyer = cancelledCheckmarks.Count() == 0;
+        collectedProducts[productNumber].GetComponent<Toggle>().isOn = true;
     }
 
 }

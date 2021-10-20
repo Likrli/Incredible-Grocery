@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 public class Buyer : MonoBehaviour
 {
-    [SerializeField] private float buyerStep;
     [SerializeField] private float progress;
     [SerializeField] private GameObject buyerBubble;
     [SerializeField] private GameObject[] orderedProducts;
@@ -16,6 +15,7 @@ public class Buyer : MonoBehaviour
     [SerializeField] private GameObject progressBar;
     [SerializeField] private Image scaleImg;
     private const string Walk = "Walk";
+    private readonly float buyerStep = 0.005f;
     private float _waitingTime;
     private bool _isBuys;
     private bool _isServed;
@@ -71,10 +71,10 @@ public class Buyer : MonoBehaviour
             }
             else
             {
-                _storage.ReceivedEmotion -= OnShowEmotion;
                 if (_isBuys)
                 {
-                    _storage.RefreshStorage();
+                    _storage.ResetStorage();
+                    _storage.ReceivedEmotion -= OnShowEmotion;
                 }
                 _buyerAudioSource.PlayOneShot(_audioManager.AllClips[5]);
                 OnShowEmotion(false);
@@ -142,16 +142,16 @@ public class Buyer : MonoBehaviour
     {
         if (collision.TryGetComponent(out PointEntry pointEntry))
         {
-            _audioManager = SaveData.instance.audioManager;
+            _audioManager = AudioManager.Instance;
             _gameController = collision.GetComponent<GameController>();
-            _storage = collision.GetComponent<Storage>();
-           _gameController.RivesedQueue += CheckQueue;
+           _gameController.ChangedQueue += CheckQueue;
             CheckQueue();
         }
         if (collision.TryGetComponent(out PointBuy pointBuy))
         {
             if (!_isServed)
             {
+                _storage = collision.GetComponent<Storage>();
                 MakeOrder();
                 _storage.ReceivedEmotion += OnShowEmotion;
                 _storage.StoppedBuyersTime += StoppedWaitingTime;
@@ -163,8 +163,11 @@ public class Buyer : MonoBehaviour
         }
         if (collision.TryGetComponent(out Exit exit))
         {
-            _storage.ReceivedEmotion -= OnShowEmotion;
-            _storage.StoppedBuyersTime -= StoppedWaitingTime;
+            if(_storage != null)
+            {
+                _storage.ReceivedEmotion -= OnShowEmotion;
+                _storage.StoppedBuyersTime -= StoppedWaitingTime;
+            }
             _gameController.SayGoodbyeBuyer(this);
             Destroy(gameObject);
         }
@@ -195,17 +198,15 @@ public class Buyer : MonoBehaviour
             allProductsId.RemoveAt(selectedProduct);
             allProductsSprite.RemoveAt(selectedProduct);
         }
-        StartCoroutine(TransferOrder(orderedProductsNumber, orderedProductsId));
+        StartCoroutine(TransferOrder(orderedProductsId));
     }
-    private IEnumerator TransferOrder(int orderedProductsNumber, List<int> orderedProductsId)
+    private IEnumerator TransferOrder(List<int> orderedProductsId)
     {
         CancelInvoke(nameof(WasteWaitingTime));
         yield return new WaitForSeconds(3f);
         InvokeRepeating(nameof(WasteWaitingTime), 0f, 0.1f);
         buyerBubble.SetActive(false);
         _buyerAudioSource.PlayOneShot(_audioManager.AllClips[1]);
-
-        _gameController.ServeBuyer(orderedProductsNumber, orderedProductsId);
-
+        _gameController.ServeBuyer(orderedProductsId);
     }
 }

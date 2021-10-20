@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private int orderedProductsNumber;
     [SerializeField] private List<int> orderedProductsId;
     [SerializeField] private Products[] allProducts;
     [SerializeField] private Text cashAmount;
@@ -12,34 +11,38 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject buyer;
     [SerializeField] private GameObject notification;
     [SerializeField] private GameObject mainCanvas;
-    public int OrderedProductsNumber => orderedProductsNumber;
+    [SerializeField] private Storage storage;
+    [SerializeField] private List<Button> allGameButtons;
     public Products[] AllProducts => allProducts;
     public List<int> OrderedProductsId => orderedProductsId;
     public List<Buyer> BuyersQueue => _buyersQueue;
     public Transform[] Points => points;
-    public delegate void OnRivesedQueue();
-    public event OnRivesedQueue RivesedQueue;
+
+    public delegate void ChangedQueueHandler();
+    public event ChangedQueueHandler ChangedQueue;
 
     private List<Buyer> _buyersQueue = new List<Buyer>();
     private List<Buyer> _buyersInStore = new List<Buyer>();
-    private Storage _storage;
     private SaveData _saveData;
     private AudioManager _audioManager;
 
 
     private void Start()
     {
-        _saveData = SaveData.instance;
-        _audioManager = _saveData.audioManager;
-        _storage = GetComponent<Storage>();
+        _saveData = SaveData.Instance;
+        _audioManager = AudioManager.Instance;
         _saveData.RecalculatedCash += UpdateTextCash;
         _saveData.ReceivedNotification += ShowNotification;
-        _storage.ReceivedCash += OnGetCash;
+        storage.ReceivedCash += OnGetCash;
         GenerateBuyers();
-        UpdateTextCash(_saveData.Cash);
+        UpdateTextCash(_saveData.AllData.cash);
         for (int i = 0; i < allProducts.Length; i++)
         {
-            allProducts[i].ProductAmount = _saveData.product.productsAmount[i];
+            allProducts[i].ProductAmount = _saveData.AllData.productsAmount[i];
+        }
+        foreach (var button in allGameButtons)
+        {
+            button.onClick.AddListener(_audioManager.PlaySoundsButton);
         }
     }
 
@@ -51,7 +54,7 @@ public class GameController : MonoBehaviour
     {
         _audioManager.PlayClip(value > 0 ? AudioManager.Clip.MoneyEarned : AudioManager.Clip.MoneySpent);
         Notification newNotification = Instantiate(notification.GetComponent<Notification>(), mainCanvas.transform);
-        newNotification.SetNotificate(value);
+        newNotification.SetNotificationText(value);
     }
 
     public void GenerateBuyers() => InvokeRepeating(nameof(SpawnBuyer), Random.Range(5f, 10f), Random.Range(5f, 10f));
@@ -67,23 +70,29 @@ public class GameController : MonoBehaviour
     public void ChangeBuyersQueue(Buyer servedBuyer)
     {
         _buyersQueue.Remove(servedBuyer);
-        RivesedQueue?.Invoke();
+        ChangedQueue?.Invoke();
     }
     public void SayGoodbyeBuyer(Buyer buyer)
     {
         _buyersInStore.Remove(buyer);
     }
-    public void ServeBuyer(int newOrderedProductsNumber, List<int> newOrderedProductsId)
+    public void ServeBuyer(List<int> newOrderedProductsId)
     {
         orderedProductsId.Clear();
         orderedProductsId.AddRange(newOrderedProductsId);
-        orderedProductsNumber = newOrderedProductsNumber;
-        _storage.ShowStorage();
+        storage.ShowStorage();
     }
     public void RefreshProducts(int productId, bool isAdded)
     {
-        _saveData.product.productsAmount[productId] = isAdded ? _saveData.product.productsAmount[productId] + 1 : _saveData.product.productsAmount[productId] - 1;
-        allProducts[productId].ProductAmount = _saveData.product.productsAmount[productId];
+        if (isAdded)
+        {
+            _saveData.AllData.productsAmount[productId]++;
+        }
+        else
+        {
+            _saveData.AllData.productsAmount[productId]--;
+        }
+        allProducts[productId].ProductAmount = _saveData.AllData.productsAmount[productId];
     }
     private void OnGetCash(bool wasHappyBuyer, int rightProductsAmount)
     {
@@ -92,10 +101,5 @@ public class GameController : MonoBehaviour
             _audioManager.PlayClip(AudioManager.Clip.Money);
             _saveData.SaveCash(newCash: rightProductsAmount * (wasHappyBuyer? 20 : 10));
         }
-    }
-
-    private void PlaySoundsButton()
-    {
-        _audioManager.PlayClip(clip: AudioManager.Clip.ClickButton);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class Notification : MonoBehaviour
 {
     [SerializeField] private Text notificate;
-    public void SetNotificate(int value)
+    public void SetNotificationText(int value)
     {
         notificate.text = value > 0 ? $"+${value}" : $"-${Mathf.Abs(value)}";
     }
