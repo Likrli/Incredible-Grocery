@@ -44,13 +44,14 @@ public class Warehouse : MonoBehaviour
     }
     private void ControlOrderButton()
     {
-        if (_orderedProductNumber >= 0)
+        if (!(_orderedProductNumber >= 0))
         {
-            _orderPrice = _orderedProductNumber * _priceProduct;
-            priceText.text = $"${_orderPrice}";
-            priceText.color = _saveData.AllData.cash >= _orderPrice ? Color.green : Color.red;
-            orderButton.interactable = _orderedProductNumber > 0 && _saveData.AllData.cash >= _orderPrice;
+            return;
         }
+        _orderPrice = _orderedProductNumber * _priceProduct;
+        priceText.text = $"${_orderPrice}";
+        priceText.color = _saveData.AllData.cash >= _orderPrice ? Color.green : Color.red;
+        orderButton.interactable = _orderedProductNumber > 0 && _saveData.AllData.cash >= _orderPrice;
     }
     private void OnClickedOrderButton()
     {

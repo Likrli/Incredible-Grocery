@@ -60,12 +60,13 @@ public class GameController : MonoBehaviour
     public void GenerateBuyers() => InvokeRepeating(nameof(SpawnBuyer), Random.Range(5f, 10f), Random.Range(5f, 10f));
     private void SpawnBuyer()
     {
-        if (_buyersInStore.Count < 3)
+        if (!(_buyersInStore.Count < 3))
         {
-            _buyersQueue.Add(Instantiate(buyer).GetComponent<Buyer>());
-            _buyersInStore.Clear();
-            _buyersInStore.AddRange(_buyersQueue);
+            return;
         }
+        _buyersQueue.Add(Instantiate(buyer).GetComponent<Buyer>());
+        _buyersInStore.Clear();
+        _buyersInStore.AddRange(_buyersQueue);
     }
     public void ChangeBuyersQueue(Buyer servedBuyer)
     {
@@ -96,10 +97,11 @@ public class GameController : MonoBehaviour
     }
     private void OnGetCash(bool wasHappyBuyer, int rightProductsAmount)
     {
-        if (rightProductsAmount > 0)
+        if (!(rightProductsAmount > 0))
         {
-            _audioManager.PlayClip(AudioManager.Clip.Money);
-            _saveData.SaveCash(newCash: rightProductsAmount * (wasHappyBuyer? 20 : 10));
+            return;
         }
+        _audioManager.PlayClip(AudioManager.Clip.Money);
+        _saveData.SaveCash(newCash: rightProductsAmount * (wasHappyBuyer ? 20 : 10));
     }
 }

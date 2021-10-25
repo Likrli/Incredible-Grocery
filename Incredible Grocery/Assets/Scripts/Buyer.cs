@@ -60,25 +60,26 @@ public class Buyer : MonoBehaviour
 
     private void WasteWaitingTime()
     {
-        if (_isWaiting)
+        if (!_isWaiting)
         {
-            if(_waitingTime > 0.1f)
+            return;
+        }
+        if (_waitingTime > 0.1f)
+        {
+            _waitingTime -= 0.1f;
+            timeSlider.value = _waitingTime;
+            Color color = Color.Lerp(Color.green, Color.red, 1 - _waitingTime / 10);
+            scaleImg.color = color;
+        }
+        else
+        {
+            if (_isBuys)
             {
-                _waitingTime -= 0.1f;
-                timeSlider.value = _waitingTime;
-                Color color = Color.Lerp(Color.green, Color.red, 1 - _waitingTime / 10);  
-                scaleImg.color = color; 
+                _storage.ResetStorage();
+                _storage.ReceivedEmotion -= OnShowEmotion;
             }
-            else
-            {
-                if (_isBuys)
-                {
-                    _storage.ResetStorage();
-                    _storage.ReceivedEmotion -= OnShowEmotion;
-                }
-                _buyerAudioSource.PlayOneShot(_audioManager.AllClips[5]);
-                OnShowEmotion(false);
-            }
+            _buyerAudioSource.PlayOneShot(_audioManager.AllClips[5]);
+            OnShowEmotion(false);
         }
     }
 
@@ -118,24 +119,26 @@ public class Buyer : MonoBehaviour
 
     private void CheckQueue()
     {
-        if (!_isServed)
+        if (_isServed)
         {
-           if(this == _gameController.BuyersQueue[0])
-            {
-                StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _gameController.Points[1].position, maxProgress: 1));
-                buyerRendered.sortingOrder = 0;
-            }
-            else if(this == _gameController.BuyersQueue[1])
-            {
-                StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _gameController.Points[1].position, maxProgress: .55f));
-                buyerRendered.sortingOrder = 1;
-            }
-            else
-            {
-                StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _gameController.Points[1].position, maxProgress: 0.1f));
-                buyerRendered.sortingOrder = 2;
-            }
+            return;
         }
+        if (this == _gameController.BuyersQueue[0])
+        {
+            StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _gameController.Points[1].position, maxProgress: 1));
+            buyerRendered.sortingOrder = 0;
+        }
+        else if (this == _gameController.BuyersQueue[1])
+        {
+            StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _gameController.Points[1].position, maxProgress: .55f));
+            buyerRendered.sortingOrder = 1;
+        }
+        else
+        {
+            StartCoroutine(MoveBuyer(currentPosition: transform.position, desiredPosition: _gameController.Points[1].position, maxProgress: 0.1f));
+            buyerRendered.sortingOrder = 2;
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
